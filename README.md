@@ -28,6 +28,6 @@ h= steepness of B&H stock-recruitment relationships,
 SPRtarget= management objective as B0 fraction.
 
 
-Once the model is installed, The model can be run as LBPA_fits("filename.xlsx"). After running, four csv files are produced: model parameters, model variables, likelihood components values, and per recruits analysis 
+Once the model is installed, The model can be run as LBPA_fits("filename.xlsx"). An example of a data-file was added and can be downloaded before package installation. After running, four csv files are produced: model parameters, model variables, likelihood components values, and per recruits analysis 
 
 For any question: cristian.canales.r@pucv.cl
