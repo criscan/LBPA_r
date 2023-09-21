@@ -1,11 +1,11 @@
 Package: LBPA
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Length-Based Pseudo-cohort Analysis 
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Author: Cristian M. Canales, Andre Punt and Mauricio Mardones
+Maintainer: Cristian M. Canales <cristian.canales.r@pucv.cl>
+Description: This model estimates the fishing mortality and Spawning Potential Ratio (SPR) by a statistical analysis of several length frequencies of catches (LFC) simultaneously. The model works under the equilibrium conditions assumption and its estimates correspond to an average of years period reflected in analyzed LFCs.
+URL: https://doi.org/10.1016/j.fishres.2020.105810
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
