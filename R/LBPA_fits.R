@@ -308,37 +308,6 @@ LBPA_fits=function(name){
     penal=sum(0.5*(data_list$prioris-log(c(L50,slope,Fcr,Lr,a0,cv)))^2/data_list$cv_par^2)
 
 
-    par(mfrow = c(2, 2))
-
-    pobs=fobs/matrix(1,length(datos[,1]),1)%*%colSums(fobs)
-
-    matplot(Talla,pobs,type="l",lty=1, col="gray",xlab="Talla", ylab="Frecuencia",main="Frec. tallas",cex.main = 1.)
-
-
-    plot(Talla,ppred ,type="l", col="red",lwd=2,xlab="Talla", ylab="Frecuencia",
-         main="Frec. tallas", ylim=c(0,max(pobs)),cex.main = 1.)
-    pobs=fobs
-
-
-    for (i in 2:length(datos[1,])) {
-      lines(Talla,fobs[,i-1]/sum(fobs[,i-1]),type="p",col="gray",pch=20,cex=1.5)
-      pobs[,i-1]=fobs[,i-1]/sum(fobs[,i-1])
-    }
-    lines(Talla,ppred, col="red",lwd=2)
-    legend("topright",c("dato","modelo"),col=c("gray","red"),
-           lty=1,lwd=2,bty="n",cex=0.8)
-
-
-
-    unos=matrix(1,length(fobs[1,]),1)
-    res=(pobs-ppred%*%t(unos))
-    res=res/sd(res)
-
-    hist(res,prob=T,main="Residuales",cex.lab = 1.,
-         cex.axis = 1.,ylab="Densidad",xlab="Residual normalizado",cex.main = 1.)
-    x <- seq(min(res), max(res), length = 200)
-    lines(x, dnorm(x), col = "red", lwd = 2)
-    box()
 
  par(mfrow = c(2, 2))
 
