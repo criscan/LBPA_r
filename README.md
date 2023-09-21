@@ -4,7 +4,7 @@
 
 Stock status for many medium- and small-scale fisheries is unknown due, for example, to a lack of catch data and the absence of scientific observer programs. However, length-frequency data are often available for such fisheries because they are the cheapest and easiest data to obtain. Various stock assessment methods have been developed that use length-frequency data and make equilibrium assumptions regarding both recruitment and fishing mortality. These assumptions raise questions regarding the reliability of the results, particularly when the method is applied to a single sample of length-frequency. We developed a Length-Based Pseudo-cohort Analysis (LBPA) model whose parameters can be estimated using multiple length frequencies and penalized maximum likelihood, under the assumption that using more than one length-frequency sample reduces the effects of the equilibrium conditions assumed in the model. This work provides guidelines that should be considered when using length-based pseudo-cohort models for data-poor fisheries.
 
-The model is a package for R and can be download as
+The model is a package for R and can be installed as
 
 1. If devtools package is already installed
    
