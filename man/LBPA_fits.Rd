@@ -25,6 +25,7 @@ The model estimates the fishing mortality and depletion of the Spawning Potentia
 The model is fitted to several length frequencies of catches simultaneously by minimizing a penalized log-likelihood function.
 }
 \examples{
-LBPA_fits("data_file.xlsx")
+name <- LBPA:::.data()
+LBPA_fits(name)
 LBPA_fits("data_file.xlsx")
 }
