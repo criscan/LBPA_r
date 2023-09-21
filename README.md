@@ -16,16 +16,19 @@ The model is a package for R and can be installed as
 
 When running the model,  be sure the Excel library is installed and the data file in the same path. The Excel data file file has four sheets
 
-1. Lenght frequencies of catches by year/sample (LF)
-2. Biological parameters
+a. Lenght frequencies of catches by year/sample (LF)
+b. Biological parameters
 
-Loo	k	= Growth parameters,
-M	= Natural mortality rate,
-log_aw =condition coefficient of length-weight relationship (in log scale),
-bw = potential coefficient of length-weight relationship,
-L50m,	L95m,	dtm = length of maturity at 50 and 95 percent, and year fraction when spawn occurs,	
-h= steepness of B&H stock-recruitment relationships, 	
-SPRtarget= management objective as B0 fraction.
+   Loo	k	= Growth parameters,
+   M	= Natural mortality rate,
+   log_aw =condition coefficient of length-weight relationship (in log scale),
+   bw = potential coefficient of length-weight relationship,
+   L50m,	L95m,	dtm = length of maturity at 50 and 95 percent, and year fraction when spawn occurs,	
+   h= steepness of B&H stock-recruitment relationships, 	
+   SPRtarget= management objective as B0 fraction.
+
+c. Start values for model's parameters and its coefficient of variation (Start values for model's parameters and its coefficient of variation (as parameter constraints)
+d. Weighting factors for each LF considered
 
 
 Once the model is installed, The model can be run as LBPA_fits("filename.xlsx"). An example of a data-file was added and can be downloaded before package installation. After running, four csv files are produced: model parameters, model variables, likelihood components values, and per recruits analysis 
