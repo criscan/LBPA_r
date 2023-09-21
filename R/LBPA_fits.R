@@ -11,16 +11,6 @@
 
 LBPA_fits=function(name){
 
-#' @description The model estimates the fishing mortality and depletion of the Spawning Potential Ratio (SPR) in an equilibrium condition.
-#' The model is fitted to several length frequencies of catches simultaneously by minimizing a penalized log-likelihood function.
-#' @param name excel (.xlsx) file with data and parameters. This file contains four sheets: LF data, biological parameters,
-#' initial parameters and data weighting
-#' @return Several graphics with de model fit and population variables are displayed. Four csv files are generated: model parameters,
-#' population variables, log-likelihood and per-recruit variables
-#' @examples
-#' LBPA_fits("data_file.xlsx")
-
-
 
   ferrLBPA<-function(parini,data_list){
 
