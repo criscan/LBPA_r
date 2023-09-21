@@ -27,7 +27,8 @@ b. Biological parameters
    h= steepness of B&H stock-recruitment relationships, 	
    SPRtarget= management objective as B0 fraction.
 
-c. Start values for model's parameters and its coefficient of variation (Start values for model's parameters and its coefficient of variation (as parameter constraints)    
+c. Start values for model's parameters and its coefficient of variation (Start values for model's parameters and its coefficient of variation (as parameter constraints)
+
 d. Weighting factors for each LF considered    
 
 
