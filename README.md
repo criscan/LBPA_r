@@ -14,10 +14,10 @@ The model is a package for R and can be installed as
 
    devtools::install_github(("https://github.com/criscan/LBPA_r")
 
-When running the model,  be sure the Excel library is installed and the data file in the same path. The Excel data file file has four sheets
+When running the model,  be sure the Excel library is installed and the data file in the same path. The Excel data file file has four sheets    
 
-a. Lenght frequencies of catches by year/sample (LF)
-b. Biological parameters
+a. Lenght frequencies of catches by year/sample (LF)     
+b. Biological parameters    
 
    Loo	k	= Growth parameters,
    M	= Natural mortality rate,
@@ -27,8 +27,8 @@ b. Biological parameters
    h= steepness of B&H stock-recruitment relationships, 	
    SPRtarget= management objective as B0 fraction.
 
-c. Start values for model's parameters and its coefficient of variation (Start values for model's parameters and its coefficient of variation (as parameter constraints)
-d. Weighting factors for each LF considered
+c. Start values for model's parameters and its coefficient of variation (Start values for model's parameters and its coefficient of variation (as parameter constraints)    
+d. Weighting factors for each LF considered    
 
 
 Once the model is installed, The model can be run as LBPA_fits("filename.xlsx"). An example of a data-file was added and can be downloaded before package installation. After running, four csv files are produced: model parameters, model variables, likelihood components values, and per recruits analysis 
