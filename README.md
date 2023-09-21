@@ -19,13 +19,13 @@ When running the model,  be sure the Excel library is installed and the data fil
 1. Lenght frequencies of catches by year/sample (LF)
 2. Biological parameters
 
-Loo	k	= Growth parameters
-M	= Natural mortality rate
-log_aw =condition coefficient of length-weight relationship (in log scale)
-bw = potential coefficient of length-weight relationship
-L50m,	L95m,	dtm = length of maturity at 50 and 95 percent, and year fraction when spawn occurs.	
-h= steepness of B&H stock-recruitment relationships 	
-SPRtarget= management objective as B0 fraction
+Loo	k	= Growth parameters,
+M	= Natural mortality rate,
+log_aw =condition coefficient of length-weight relationship (in log scale),
+bw = potential coefficient of length-weight relationship,
+L50m,	L95m,	dtm = length of maturity at 50 and 95 percent, and year fraction when spawn occurs,	
+h= steepness of B&H stock-recruitment relationships, 	
+SPRtarget= management objective as B0 fraction.
 
 
 Once the model is installed, The model can be run as LBPA_fits("filename.xlsx"). After running, four csv files are produced: model parameters, model variables, likelihood components values, and per recruits analysis 
