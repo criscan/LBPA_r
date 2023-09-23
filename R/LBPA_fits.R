@@ -3,47 +3,17 @@
 #' The model is fitted to several length frequencies of catches simultaneously by minimizing a penalized log-likelihood function.
 #' @param name excel (.xlsx) file with data and parameters. This file contains four sheets: LF data, biological parameters,
 #' initial parameters and data weighting
-#' @return Several graphics with de model fit and population variables are displayed. Four csv files are generated: model parameters,
+#' @return Several graphics with de model fit are displayed, and an object variable with model and population variables. Four csv files are generated: model parameters,
 #' population variables, log-likelihood and per-recruit variables
 #' @examples
-#' LBPA_fits("data_file.xlsx")
 
 
 LBPA_fits=function(name){
 
 
+#Likelihood function---------------
+
   ferrLBPA<-function(parini,data_list){
-
-
-    # Por recluta
-    apr_out <- function(Sel, M, Mad, Wage, Tmax) {
-
-      Fref=seq(0,3*M,M/50)
-      N=rep(1,Tmax)
-      YPR=rep(0,length(Fref))
-      BPR=rep(0,length(Fref))
-
-      for (j in 1:length(Fref)) {
-        F=Fref[j]*Sel
-        Z=F+M
-
-        for (i in 2:Tmax) {
-
-          N[i]=N[i-1]*exp(-Z[i-1])
-        }
-        N[i]=N[i]/(1-exp(-Z[i]))
-
-        C=N*F/Z*(1-exp(-Z))
-        YPR[j]=sum(C*Wage)
-        B0=sum(N0*Mad*Wage*exp(-dtm*M))
-        BPR[j]=sum(N*Mad*Wage*exp(-dtm*Z))
-
-      }
-      apr_out=list(Fref=Fref,BPR=BPR,YPR=YPR)
-
-      return(apr_out)
-    }
-
 
 
     Loo=data_list$parbiol[1]
@@ -155,7 +125,8 @@ LBPA_fits=function(name){
 
   }
 
-
+#Graphics function---------------
+  
   grafLBPA<-function(parfin,data_list){
 
 
@@ -198,6 +169,8 @@ LBPA_fits=function(name){
     }
 
 
+#Main script---------------
+    
 
     Loo=data_list$parbiol[1]
     k=data_list$parbiol[2]
@@ -279,7 +252,7 @@ LBPA_fits=function(name){
         z1=((Talla[j]-xs)-Lage[i])/sd_age[i]
         z2=((Talla[j]+xs)-Lage[i])/sd_age[i]
         pdf[i,j]=pnorm(z2)-pnorm(z1)}
-      pdf[i,]=pdf[i,]/sum(pdf[i,])
+        pdf[i,]=pdf[i,]/sum(pdf[i,])
 
     }
 
@@ -299,15 +272,17 @@ LBPA_fits=function(name){
 
 
 
- par(mfrow = c(2, 2))
 
  pobs=fobs/matrix(1,length(datos[,1]),1)%*%colSums(fobs)
 
- matplot(Talla,pobs,type="l",lty=1, col="gray",xlab="Length", ylab="Frequency",main="Length frequency",cex.main = 1.)
-
-
- plot(Talla,ppred ,type="l", col="red",lwd=2,xlab="Length", ylab="Frequency",
-      main="Length frequency", ylim=c(0,max(pobs)),cex.main = 1.)
+ matplot(Talla,pobs,type="l",lty=1, col="darkgray",xlab="Length", ylab="Proportion",main="LBPA model fit",cex.main = 1.,lwd=2.)
+ lines(Talla,ppred ,type="l", col="red",lwd=2)
+ legend("topright",c("data","model"),col=c("gray","red"),
+        lty=1,lwd=2,bty="n",cex=0.9)
+ 
+ 
+ plot(Talla,ppred ,type="l", col="red",lwd=2,xlab="Length", ylab="Proportion",
+      main="LBPA model fit", ylim=c(0,max(pobs)),cex.main = 1.)
  pobs=fobs
 
 
@@ -317,7 +292,7 @@ LBPA_fits=function(name){
  }
  lines(Talla,ppred, col="red",lwd=2)
  legend("topright",c("data","model"),col=c("gray","red"),
-        lty=1,lwd=2,bty="n",cex=0.8)
+        lty=1,lwd=2,bty="n",cex=0.9)
 
 
 
@@ -331,13 +306,19 @@ LBPA_fits=function(name){
  lines(x, dnorm(x), col = "red", lwd = 2)
  box()
 
- par(mfrow = c(2, 2))
+ par(mfrow = c(1, 1))
 
- plot(Talla,pdf[1,],type="l",col="green",lwd=2,
-      xlab="Length", ylab="Proportion",main="Recruitment and modal lengths",cex.main = 1.)
- abline(v=Lage,lty=2,col="gray")
- text(Lr*1.1,0.01,paste("Lr=",round(Lr,2)))
+ plot(Talla,pdf[1,]*N[1],type="l",col="green",lwd=2,
+      xlab="Length", ylab="Proportion",main="Recruitment and age groups",cex.main = 1.)
+ for (i in 2:length(N)-1) {
+   lines(Talla,pdf[i,]*N[i],col="black")}
+   lines(Talla,pdf[1,]*N[1],type="l",col="green",lwd=2)
 
+ abline(v=Lr,lty=2)
+ text(Lr*1.05,0.01,paste("Lr=",round(Lr,2)),col="red",lwd=2)
+ legend("topright",c("recruitment","age-groups"),col=c("green","black"),
+        lty=c(1,1),lwd=c(2,1),bty="n",cex=0.9)
+ 
 
  Sel=1/(1+exp(-log(19)*(Lage-L50)/(slope)))
  Mad=1/(1+exp(-log(19)*(Lage-L50m)/(L95m)))
@@ -347,17 +328,10 @@ LBPA_fits=function(name){
   lines(Talla,1/(1+exp(-log(19)*(Talla-L50m)/(L95m-L50m))),type="l",col="blue",lwd=2)
   abline(h=0.5,lty=2)
   abline(v=L50,lty=2)
-  legend(max(Talla)*0.7,0.95,c("Mat","Select"),col=c("blue","green"),
-         lty=1,lwd=2,bty="n",cex=0.8)
-  text(L50*1.1,0.05,paste("L50=",round(L50,2)))
+  legend(max(Talla)*0.7,0.95,c("Maturity","Selectivity"),col=c("blue","green"),
+         lty=1,lwd=2,bty="n",cex=0.9)
+  text(L50*1.1,0.05,paste("L50=",round(L50,2)),col="red")
 
-
-  plot(age,Lage,type="b",ylim=c(0,Loo),xlab="Relative age", ylab="Length", main="Growth model age-length", cex.main=1,
-       lwd=2)
-  abline(h=Lage,lty=2,col="gray")
-
-
-  par(mfrow = c(2, 1))
 
   ypr <- apr_out(Sel, M, Mad, Wage, Tmax, Fcr)
 
@@ -376,10 +350,10 @@ LBPA_fits=function(name){
   abline(v=Fcr,lty=2)
 
   lines(Fcr,SPR,type="p",pch=20,cex=2.0)
-  text(ypr$Fref[id]*1.2,0.1,paste("Fmsy=",round(ypr$Fref[id],2)),col="red",cex=0.8)
-  text(Fcr*1.1,0.1,paste("Fcr=",round(Fcr,2)),col="red",cex=0.8)
+  text(ypr$Fref[id]*1.2,target*1.1,paste("Fmsy=",round(ypr$Fref[id],2)),col="red",cex=0.9)
+  text(Fcr*1.1,0.05,paste("Fcr=",round(Fcr,2)),col="red",cex=0.9)
   legend("topright",c("Yield","Biomass"),col=c("blue","green"),
-         lty=1,lwd=2,bty="n",cex=0.8)
+         lty=1,lwd=2,bty="n",cex=0.9)
 
 
 
@@ -389,7 +363,7 @@ LBPA_fits=function(name){
           col=c("lightgreen","lightblue","gray"),cex.main = 1.)
   abline(h=target,lty=2)
   box()
-  text(3,1.5*SPR,paste("SPR=",round(SPR,2)),col="red",cex=0.8)
+  text(3,1.2*SPR,paste("SPR=",round(SPR,2)),col="red")
 
 
 
@@ -418,8 +392,6 @@ LBPA_fits=function(name){
     Nage0length[i,]<-N0[i]*pdf[i,]#/sum(C)
   }
 
-  par(mfrow = c(2,2))
-
 
   edad=c(1:Tmax)
   barplot(N0~edad,col="lightblue",xlab="Relative age",ylab="Density",
@@ -430,8 +402,14 @@ LBPA_fits=function(name){
   legend("topright",c("Unfished","Current","Catch"),col=c("lightblue","gray","blue"),
          lty=1,lwd=2, bty="n",cex=0.8)
 
-
-    plot(Talla,colSums(Nagelength), type="l", lwd=2, col="blue",
+  barplot(C~edad,col="lightblue",xlab="Relative age",ylab="Density",
+          main="Catch at-age",cex.main = 1.,ylim=c(0,max(C)*1.1))
+  box()
+  
+  
+  
+  
+  plot(Talla,colSums(Nagelength), type="l", lwd=2, col="blue",
        ylab="Density",
        xlab="Length",
        main="Population at-length",cex.main = 1.)
@@ -445,33 +423,18 @@ LBPA_fits=function(name){
 
   lines(Talla,colSums(Nage0length),
         type="l", cex.lab = 1.5,
-        lwd=2, lty=2,
+        lwd=2, lty=1,
         col="green",
         xlim = c(min(Talla),1.1*max(Talla)),
         ylim = c(0,max(Nagelength)))
 
+  legend("topright",c("Current","Target","Unfished","age-groups"),col=c("blue","black","green","black"),
+         lty=c(1,2,1,1),lwd=c(2,2,2,1),bty="n",cex=0.8)
 
 
-  legend("topright",c("Current","Target","Unfished"),col=c("blue","black","green"),
-         lty=c(1,2,1),lwd=2,bty="n",cex=0.8)
-
-
-  lines(Talla,Nagelength[1,],
-        type="l", cex.lab = 1.5,
-        xlim = c(min(Talla),1.1*max(Talla)),
-        ylim = c(0,max(Nagelength)))
-
-
-
-  for (i in 2:Tmax) {
+  for (i in 1:Tmax) {
     lines(Talla,Nagelength[i,], type="l")
   }
-
-
-  barplot(C~edad,col="lightblue",xlab="Relative age",ylab="Density",
-          main="Catch at-age",cex.main = 1.)
-  box()
-
 
 
   plot(Talla,ppred, type="l", lwd=2, col="blue",
@@ -498,18 +461,14 @@ LBPA_fits=function(name){
     lines(Talla,Cagelength[i,], type="l")
   }
 
-  legend("topright",c("Current","Target"),col=c("blue","black"),
-         lty=c(1,2),lwd=2,bty="n",cex=0.8)
-
-
-
+  legend("topright",c("Current","Target","age-groups"),col=c("blue","black","black"),
+         lty=c(1,2,1),lwd=c(2,2,1),bty="n",cex=0.8)
 
 
   like=c(-sum,0.5*(data_list$prioris-log(c(L50,slope,Fcr,Lr,a0,cv)))^2/data_list$cv_par^2)
 
-
-  outputs=list(edad=age,talla=Lage,sd_edad=sd_age,Select=Sel,Mad=Mad,Peso=Wage,N0=N0,N=N,F=F,Z=Z,C=C,alfa=alfa,beta=beta,ptalla=pdf,
-               Fref=ypr$Fref,BPReq=BPR_eq,YPReq=YPR_eq,pR0=Reclu,SPR=SPR,Fcur=Fcr,Ftar=Ftar,YPRtar=YPRtar,YPRcur=YPRcur,likeval=like)
+  outputs=list(Age_r=age,length_age=Lage,sd_age=sd_age,Select=Sel,Matur=Mad,W_age=Wage,N0_age=N0,N_age=N,F_age=Sel*Fcr,Z_age=Z,C_age=C,a_SR=alfa,b_SR=beta,Plength_age=pdf,
+               Fref=ypr$Fref,BPReq=BPR_eq,YPReq=YPR_eq,pR0=Reclu,SPR=SPR,Fcur=Fcr,Ftar=Ftar,YPRtar=YPRtar,YPRcur=YPRcur,LL=like,Length=Talla,LFpred=ppred,LFobs=pobs)
 
     return(outputs)
 
@@ -559,10 +518,12 @@ solucion=data.frame(L50=parfin[1],slope=parfin[2],Fcr=parfin[3],Lr=parfin[4],a0=
 
 v=grafLBPA(parfin,data_list)
 
+BYPR=data.frame(Fref=v$Fref,YPR=v$YPReq,BPR=v$BPReq,pR0=v$pR0)
 
 table1 <- matrix(ncol=1, round(solucion[1:6], 2))
 rownames(table1) <- c("Selectivity length at 50% (L50)", "Slope (d)","Fishing mortality (Fcr)",
                       "Size of recruits (Lr)","Invariant std in length (a0)", "Coeff of variation length at-age (cv)")
+colnames(table1)<-"Value"
 
 B0=v$BPReq[1]
 
@@ -570,12 +531,16 @@ B0=v$BPReq[1]
  rownames(table2) <- c("Virginal biomass per-recruit (BPR0)", "Current BPR", "Target BPR","Current spawning potential ratio (SPR)",
                          "Target SPR (SPRtar)", "Target fishing mortality (Ftar)","Overfishing index (F/Ftar)",
                          "Current yield per-recruit (YPRcur)","Target  yield per-recruit (YPRtar)")
-
- table3 <- matrix(ncol=1, round(c(v$likeval,pars_fin$value),2))
+ colnames(table2)<-"Value"
+ 
+ table3 <- matrix(ncol=1, round(c(v$LL,pars_fin$value),2))
  rownames(table3) <- c("LF Proportions", "L50", "d","Fcr","Lr", "a0","cv","Total")
-
+ colnames(table3)<-"log-likelihood"
+ 
+ 
  table4=data.frame(Fref=v$Fref,BPReq=v$BPReq,YPReq=v$YPReq)
-
+ colnames(table4)<-"Value"
+ 
  write.csv(table1, 'Parameters_LBPA.csv',row.names = T)
 
  write.csv(table2, 'Variables_LBPA.csv', row.names = T)
@@ -584,11 +549,18 @@ B0=v$BPReq[1]
 
  write.csv(table4, 'Per_recruit.csv', row.names = F)
 
+ # print(knitr::kable(table1,"simple",caption = "1: Estimated parameters"))
+ # print(knitr::kable(table2,"simple",caption = "2: Per-recruit population's variables"))
+ # print(knitr::kable(table3,"simple",caption = "3: Log-likelihood components"))
 
-
- print(knitr::kable(table1,"simple",caption = "1: Estimated parameters"))
- print(knitr::kable(table2,"simple",caption = "2: Per-recruit population's variables"))
- print(knitr::kable(table3,"simple",caption = "3: Log-likelihood components"))
-
-
+ vars_at_age=data.frame(Age=v$Age_r,L_age=v$length_age,sd_age=v$sd_age,Select=v$Select,Matur=v$Matur,W_age=v$W_age,N0=v$N0_age,
+                        N=v$N_age,F=v$F_age,Z=v$Z_age)
+ 
+ prob_length_age=v$Plength_age
+ 
+ output=list(table1=table1,table2=table2,table3=table3,Per_recruit=BYPR,vars_at_age=vars_at_age,prob_length_age=prob_length_age,Length=v$Length,LFpred=v$LFpred,LFobs=v$LFobs)
+ 
+ return(output)
+ 
+ 
 }
