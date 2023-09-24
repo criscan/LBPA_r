@@ -14,7 +14,7 @@ The model is a package for R and can be installed as
 
    devtools::install_github("https://github.com/criscan/LBPA_r")
 
-When running the model,  be sure the Excel library is installed and the data file in the same path. The Excel data file file has four sheets    
+When running the model,  be sure the Excel library is installed and the data file in the same path. The Excel data file has four sheets    
 
 a. Lenght frequencies of catches by year/sample (LF)     
 b. Biological parameters    
