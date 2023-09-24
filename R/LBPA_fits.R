@@ -1,14 +1,14 @@
 #' @title Length-Based Pseudo-cohort Analysis - LBPA
 #' @description The model estimates the fishing mortality and depletion of the Spawning Potential Ratio (SPR) in an equilibrium condition.
 #' The model is fitted to several length frequencies of catches simultaneously by minimizing a penalized log-likelihood function.
-#' @param name excel (.xlsx) file with data and parameters. This file contains four sheets: LF data, biological parameters,
+#' @param name excel (.xlsx) file with data and parameters, graph_opt (=T or F) is graphics display is required, and save_opt (=T or F) if the csv files are generated: model parameters,
+#' population variables, log-likelihood and per-recruit variables . The xlsx file contains four sheets: LF data, biological parameters,
 #' initial parameters and data weighting
-#' @return Several graphics with de model fit are displayed, and an object variable with model and population variables. Four csv files are generated: model parameters,
-#' population variables, log-likelihood and per-recruit variables
-#' @examples
+#' @return Several variables with model fit and population variables. 
+#' @examples  lbpaout=LBPA_fits("name.xlsx", graph_opt=T, save_out=T)
 
 
-LBPA_fits=function(name){
+LBPA_fits=function(name,graph_opt,save_opt){
 
 
 #Likelihood function---------------
@@ -125,48 +125,50 @@ LBPA_fits=function(name){
 
   }
 
+
+# Por recluta function---------------------
+  
+  apr_out <- function(Sel, M, Mad, Wage, Tmax, Fcr, dtm) {
+    
+    Fref=seq(0,3*M,M/50)
+    N=rep(1,Tmax)
+    YPR=rep(0,length(Fref))
+    BPR=rep(0,length(Fref))
+    
+    for (j in 1:length(Fref)) {
+      F=Fref[j]*Sel
+      Z=F+M
+      
+      for (i in 2:Tmax) {
+        
+        N[i]=N[i-1]*exp(-Z[i-1])
+      }
+      N[i]=N[i]/(1-exp(-Z[i]))
+      
+      C=N*F/Z*(1-exp(-Z))
+      YPR[j]=sum(C*Wage)
+      BPR[j]=sum(N*Mad*Wage*exp(-dtm*Z))
+      
+      if(Fref[j]<Fcr){
+        Ncurr=N
+        Ccurr=C
+      }
+      
+      if(j==1){
+        N0=N
+      }
+      
+    }
+    B0=sum(N0*Mad*Wage*exp(-dtm*M))
+    apr_out=list(Fref=Fref,BPR=BPR,YPR=YPR,Ncurr=Ncurr,Ccurr=Ccurr,B0=B0,N0=N0)
+    
+    return(apr_out)
+  }
+  
+
 #Graphics function---------------
   
   grafLBPA<-function(parfin,data_list){
-
-
-    # Por recluta
-    apr_out <- function(Sel, M, Mad, Wage, Tmax, Fcr) {
-
-      Fref=seq(0,3*M,M/50)
-      N=rep(1,Tmax)
-      YPR=rep(0,length(Fref))
-      BPR=rep(0,length(Fref))
-
-      for (j in 1:length(Fref)) {
-        F=Fref[j]*Sel
-        Z=F+M
-
-        for (i in 2:Tmax) {
-
-          N[i]=N[i-1]*exp(-Z[i-1])
-        }
-        N[i]=N[i]/(1-exp(-Z[i]))
-
-        C=N*F/Z*(1-exp(-Z))
-        YPR[j]=sum(C*Wage)
-        BPR[j]=sum(N*Mad*Wage*exp(-dtm*Z))
-
-        if(Fref[j]<Fcr){
-          Ncurr=N
-          Ccurr=C
-        }
-
-        if(j==1){
-          N0=N
-        }
-
-      }
-      B0=sum(N0*Mad*Wage*exp(-dtm*M))
-      apr_out=list(Fref=Fref,BPR=BPR,YPR=YPR,Ncurr=Ncurr,Ccurr=Ccurr,B0=B0,N0=N0)
-
-      return(apr_out)
-    }
 
 
 #Main script---------------
@@ -208,7 +210,6 @@ LBPA_fits=function(name){
     Ctar=rep(1,Tmax)
 
 
-
     Lage[1]=Lr
     for (i in 2:Tmax) {
       Lage[i]=Lage[i-1]*exp(-k)+Loo*(1-exp(-k))
@@ -222,7 +223,7 @@ LBPA_fits=function(name){
 
     Sel_l=1/(1+exp(-log(19)*(Talla-L50)/(slope)))
 
-    ypr <- apr_out(Sel, M, Mad, Wage, Tmax, Fcr)
+    ypr <- apr_out(Sel, M, Mad, Wage, Tmax, Fcr, dtm)
 
     B0=ypr$B0
     N0=ypr$N0
@@ -270,10 +271,55 @@ LBPA_fits=function(name){
     #penalizacion de parametros
     penal=sum(0.5*(data_list$prioris-log(c(L50,slope,Fcr,Lr,a0,cv)))^2/data_list$cv_par^2)
 
+    
+    
+    pobs=fobs/matrix(1,length(datos[,1]),1)%*%colSums(fobs)
+    unos=matrix(1,length(fobs[1,]),1)
+    res=(pobs-ppred%*%t(unos))
+    res=res/sd(res)
+    
+    
+    Sel=1/(1+exp(-log(19)*(Lage-L50)/(slope)))
+    Mad=1/(1+exp(-log(19)*(Lage-L50m)/(L95m)))
+    
+    ypr <- apr_out(Sel, M, Mad, Wage, Tmax, Fcr, dtm)
+    
+    BPR_eq=alfa*ypr$BPR-beta
+    Reclu=alfa*BPR_eq/(beta+BPR_eq)
+    YPR_eq=ypr$YPR*Reclu
+    
 
+    
+    id=which(BPR_eq/BPR_eq[1]<target)[1]
+    YPRtar=YPR_eq[id]
+    Ftar=ypr$Fref[id]
+    id2=which(BPR_eq/BPR_eq[1]<SPR)[1]
+    YPRcur=YPR_eq[id2]
+    
+    ypr <- apr_out(Sel, M, Mad, Wage, Tmax, Ftar, dtm)
+    Ctar=ypr$Ccurr
+    Ntar=ypr$Ncurr
+    Cagelength<-pdf
+    Ctarlength<-pdf
+    Nagelength<-pdf
+    Nage0length<-pdf
+    Ntarlength<-pdf
+    
+    for (i in 1:Tmax) {
+      Cagelength[i,]<-C[i]*pdf[i,]#/sum(C)
+      Ctarlength[i,]<-Ctar[i]*pdf[i,]#/sum(C)
+      Ntarlength[i,]<-Ntar[i]*pdf[i,]#/sum(C)
+      Nagelength[i,]<-N[i]*pdf[i,]#/sum(C)
+      Nage0length[i,]<-N0[i]*pdf[i,]#/sum(C)
+    }
+    
+    
+    edad=c(1:Tmax)
+    
+    
+    
+if(graph_opt==T){
 
-
- pobs=fobs/matrix(1,length(datos[,1]),1)%*%colSums(fobs)
 
  matplot(Talla,pobs,type="l",lty=1, col="darkgray",xlab="Length", ylab="Proportion",main="LBPA model fit",cex.main = 1.,lwd=2.)
  lines(Talla,ppred ,type="l", col="red",lwd=2)
@@ -283,22 +329,19 @@ LBPA_fits=function(name){
  
  plot(Talla,ppred ,type="l", col="red",lwd=2,xlab="Length", ylab="Proportion",
       main="LBPA model fit", ylim=c(0,max(pobs)),cex.main = 1.)
- pobs=fobs
+
+# pobs=fobs
 
 
  for (i in 2:length(datos[1,])) {
-  lines(Talla,fobs[,i-1]/sum(fobs[,i-1]),type="p",col="gray",pch=20,cex=1.5)
-  pobs[,i-1]=fobs[,i-1]/sum(fobs[,i-1])
+  lines(Talla,pobs[,i-1],type="p",col="gray",pch=20,cex=1.5)
+#  pobs[,i-1]=fobs[,i-1]/sum(fobs[,i-1])
  }
+ 
  lines(Talla,ppred, col="red",lwd=2)
  legend("topright",c("data","model"),col=c("gray","red"),
         lty=1,lwd=2,bty="n",cex=0.9)
 
-
-
- unos=matrix(1,length(fobs[1,]),1)
- res=(pobs-ppred%*%t(unos))
- res=res/sd(res)
 
  hist(res,prob=T,main="Residuals",cex.lab = 1.,
       cex.axis = 1.,ylab="Density",xlab="Normalized residual",cex.main = 1.)
@@ -318,10 +361,7 @@ LBPA_fits=function(name){
  text(Lr*1.05,0.01,paste("Lr=",round(Lr,2)),col="red",lwd=2)
  legend("topright",c("recruitment","age-groups"),col=c("green","black"),
         lty=c(1,1),lwd=c(2,1),bty="n",cex=0.9)
- 
 
- Sel=1/(1+exp(-log(19)*(Lage-L50)/(slope)))
- Mad=1/(1+exp(-log(19)*(Lage-L50m)/(L95m)))
 
   plot(Talla,1/(1+exp(-log(19)*(Talla-L50)/(slope))),type="l",col="green",lwd=2,
        xlab="Length", ylab="Proportion",main="Selectivity and maturity",cex.main = 1.)
@@ -333,14 +373,7 @@ LBPA_fits=function(name){
   text(L50*1.1,0.05,paste("L50=",round(L50,2)),col="red")
 
 
-  ypr <- apr_out(Sel, M, Mad, Wage, Tmax, Fcr)
 
-  BPR_eq=alfa*ypr$BPR-beta
-  Reclu=alfa*BPR_eq/(beta+BPR_eq)
-  YPR_eq=ypr$YPR*Reclu
-
-
-  id=which(BPR_eq/BPR_eq[1]<target)[1]
 
   plot(ypr$Fref,YPR_eq/max(YPR_eq),type="l", col="blue",lwd=2,xlab="Fishing mortality",ylab="Biomass, Yield",
        main="Equilibrium curves",ylim=c(0,1),cex.main = 1.)
@@ -367,33 +400,9 @@ LBPA_fits=function(name){
 
 
 
-  YPRtar=YPR_eq[id]
-  Ftar=ypr$Fref[id]
-  id2=which(BPR_eq/BPR_eq[1]<SPR)[1]
-  YPRcur=YPR_eq[id2]
-
-  ypr <- apr_out(Sel, M, Mad, Wage, Tmax, Ftar)
-  Ctar=ypr$Ccurr
-  Ntar=ypr$Ncurr
 
 
-  Cagelength<-pdf
-  Ctarlength<-pdf
-  Nagelength<-pdf
-  Nage0length<-pdf
-  Ntarlength<-pdf
 
-
-  for (i in 1:Tmax) {
-    Cagelength[i,]<-C[i]*pdf[i,]#/sum(C)
-    Ctarlength[i,]<-Ctar[i]*pdf[i,]#/sum(C)
-    Ntarlength[i,]<-Ntar[i]*pdf[i,]#/sum(C)
-    Nagelength[i,]<-N[i]*pdf[i,]#/sum(C)
-    Nage0length[i,]<-N0[i]*pdf[i,]#/sum(C)
-  }
-
-
-  edad=c(1:Tmax)
   barplot(N0~edad,col="lightblue",xlab="Relative age",ylab="Density",
           main="Population at-age",cex.main = 1.)
   barplot(N~edad, add = T,col = "gray")
@@ -463,7 +472,7 @@ LBPA_fits=function(name){
 
   legend("topright",c("Current","Target","age-groups"),col=c("blue","black","black"),
          lty=c(1,2,1),lwd=c(2,2,1),bty="n",cex=0.8)
-
+}
 
   like=c(-sum,0.5*(data_list$prioris-log(c(L50,slope,Fcr,Lr,a0,cv)))^2/data_list$cv_par^2)
 
@@ -541,6 +550,8 @@ B0=v$BPReq[1]
  table4=data.frame(Fref=v$Fref,BPReq=v$BPReq,YPReq=v$YPReq)
  colnames(table4)<-"Value"
  
+ if(save_opt==T){
+ 
  write.csv(table1, 'Parameters_LBPA.csv',row.names = T)
 
  write.csv(table2, 'Variables_LBPA.csv', row.names = T)
@@ -548,6 +559,7 @@ B0=v$BPReq[1]
  write.csv(table3, 'logLL_LBPA.csv', row.names = T)
 
  write.csv(table4, 'Per_recruit.csv', row.names = F)
+ }
 
  # print(knitr::kable(table1,"simple",caption = "1: Estimated parameters"))
  # print(knitr::kable(table2,"simple",caption = "2: Per-recruit population's variables"))
