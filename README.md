@@ -12,7 +12,7 @@ The model is a package for R and can be installed as
 
 3. If devtools package is not installed
 
-   devtools::install_github(("https://github.com/criscan/LBPA_r")
+   devtools::install_github("https://github.com/criscan/LBPA_r")
 
 When running the model,  be sure the Excel library is installed and the data file in the same path. The Excel data file file has four sheets    
 
