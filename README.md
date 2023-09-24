@@ -31,7 +31,6 @@ c. Start values for model's parameters and its coefficient of variation (Start v
 
 d. Weighting factors for each LF considered    
 
-
-Once the model is installed, The model can be run as LBPA_fits("filename.xlsx"). An example of a data-file was added and can be downloaded before package installation. After running, four csv files are produced: model parameters, model variables, likelihood components values, and per recruits analysis 
+The model can be run as lbpa_out=LBPA_fits("filename.xlsx",graph_opt=T or F, save_opt=T or F). An example of a data file (.xlsx) was added and can be downloaded before package installation. After running, if save_opt=T, four csv files will be produced: model parameters, model variables, likelihood components values, and per recruits analysis. In the same context, several graphics will be generated if graph_opt=T
 
 For any question: cristian.canales.r@pucv.cl
