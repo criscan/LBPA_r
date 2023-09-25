@@ -27,10 +27,9 @@ b. Biological parameters
    h= steepness of B&H stock-recruitment relationships, 	
    SPRtarget= management objective as B0 fraction.
 
-c. Start values for model's parameters and its coefficient of variation (Start values for model's parameters and its coefficient of variation (as parameter constraints)
-
+c. Start values for model's parameters and its coefficient of variation. Each model parameter is assumed to follow a lognormal distribution with mean mu=log(a priori value) and standard deviation sd=cv
 d. Weighting factors for each LF considered    
 
-The model can be run as lbpa_out=LBPA_fits("filename.xlsx",graph_opt=T or F, save_opt=T or F). An example of a data file (.xlsx) was added and can be downloaded before package installation. After running, if save_opt=T, four csv files will be produced: model parameters, model variables, likelihood components values, and per recruits analysis. In the same context, several graphics will be generated if graph_opt=T
+The model can be run as model1=LBPA_fits("filename.xlsx",graph_opt=T or F, save_opt=T or F). An example of a data file (.xlsx) was added and can be downloaded before package installation. After running, if save_opt=T, four csv files will be produced: model parameters, model variables, likelihood components values, and per recruits analysis. In the same context, several graphics of the model will be generated if graph_opt=T
 
 For any question: cristian.canales.r@pucv.cl
