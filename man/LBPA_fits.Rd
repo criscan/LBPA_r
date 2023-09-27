@@ -4,7 +4,7 @@
 \alias{LBPA_fits}
 \title{Length-Based Pseudo-cohort Analysis - LBPA}
 \usage{
-LBPA_fits("name excel file", graph_opt=T/F, save_out=T/F )
+LBPA_fits("name excel file", graph_opt=T/F, save_opt=T/F )
 }
 \arguments{
 \item{name}{excel (.xlsx) file with data and parameters. This file contains four sheets: LF data, biological parameters,
@@ -12,13 +12,13 @@ initial parameters and data weighting}
 }
 \value{
 Several graphics with de model fit and population variables are displayed as required (graph_opt=T). Four csv files are generated: model parameters,
-population variables, log-likelihood and per-recruit variables (save_out=T)
+population variables, log-likelihood and per-recruit variables (save_opt=T)
 }
 \description{
 The model estimates the fishing mortality and depletion of the Spawning Potential Ratio (SPR) in an equilibrium condition.
 The model is fitted to several length frequencies of catches simultaneously by minimizing a penalized log-likelihood function.
 }
 \examples{
-model1<-LBPA_fits("data_file.xlsx", graph_opt=F, save_out=F ): will return just an object with all population variables and model 
-outputs without graphics display and "csv" files generating. To obtain graphics and files, turn on the options graph_opt=T, and save_out=T.
+model1<-LBPA_fits("data_file.xlsx", graph_opt=F, save_opt=F ): will return just an object with all population variables and model 
+outputs without graphics display and "csv" files generating. To obtain graphics and files, turn on the options graph_opt=T, and save_opt=T.
 }
