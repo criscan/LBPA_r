@@ -5,7 +5,7 @@
 #' population variables, log-likelihood and per-recruit variables . The xlsx file contains four sheets: LF data, biological parameters,
 #' initial parameters and data weighting
 #' @return Several variables with model fit and population variables. 
-#' @examples  lbpaout=LBPA_fits("name.xlsx", graph_opt=T, save_out=T)
+#' @examples  lbpaout=LBPA_fits("name.xlsx", graph_opt=T, save_opt=T)
 
 
 LBPA_fits=function(name,graph_opt,save_opt){
