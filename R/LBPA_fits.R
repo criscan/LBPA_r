@@ -548,7 +548,7 @@ LBPA_fits=function(name,graph_opt,save_opt){
   
   
   table4=data.frame(Fref=v$Fref,BPReq=v$BPReq,YPReq=v$YPReq)
-  colnames(table4)<-"Value"
+  #colnames(table4)<-"Value"
   
   if(save_opt==T){
     
