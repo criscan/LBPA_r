@@ -126,7 +126,7 @@ LBPA_fits=function(name,graph_opt,save_opt){
   }
   
   
-  # Por recluta function---------------------
+  # per-recruit function---------------------
   
   apr_out <- function(Sel, M, Mad, Wage, Tmax, Fcr, Ftar, dtm) {
     
