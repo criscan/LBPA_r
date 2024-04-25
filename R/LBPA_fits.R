@@ -318,8 +318,9 @@ LBPA_fits=function(name,graph_opt,save_opt){
     
     
     
-    if(graph_opt==T){
+ if(graph_opt==T){
       
+      par(mfrow = c(1, 1))
       
       matplot(Talla,pobs,type="l",lty=1, col="darkgray",xlab="Length", ylab="Proportion",main="LBPA model fit",cex.main = 1.,lwd=2.)
       lines(Talla,ppred ,type="l", col="red",lwd=2)
@@ -327,11 +328,11 @@ LBPA_fits=function(name,graph_opt,save_opt){
              lty=1,lwd=2,bty="n",cex=0.9)
       
       
+      par(mfrow = c(1, 2))
       plot(Talla,ppred ,type="l", col="red",lwd=2,xlab="Length", ylab="Proportion",
            main="LBPA model fit", ylim=c(0,max(pobs)),cex.main = 1.)
       
       # pobs=fobs
-      
       
       for (i in 2:length(datos[1,])) {
         lines(Talla,pobs[,i-1],type="p",col="gray",pch=20,cex=1.5)
@@ -349,8 +350,8 @@ LBPA_fits=function(name,graph_opt,save_opt){
       lines(x, dnorm(x), col = "red", lwd = 2)
       box()
       
-      par(mfrow = c(1, 1))
       
+      par(mfrow = c(2, 2))    
       plot(Talla,pdf[1,]*N[1],type="l",col="green",lwd=2,
            xlab="Length", ylab="Proportion",main="Recruitment and age groups",cex.main = 1.)
       for (i in 2:length(N)-1) {
@@ -398,17 +399,11 @@ LBPA_fits=function(name,graph_opt,save_opt){
       box()
       text(3,SPR+0.05,paste("SPR=",round(SPR,2)),col="red")
       
-      
-      
-      
-      
-      
       barplot(N0~edad,col="lightblue",xlab="Relative age",ylab="Density",
               main="Population at-age",cex.main = 1.)
       barplot(N~edad, add = T,col = "gray")
-      barplot(C~edad, add = T,col = "blue")
       box()
-      legend("topright",c("Unfished","Current","Catch"),col=c("lightblue","gray","blue"),
+      legend("topright",c("Unfished","Current"),col=c("lightblue","gray","blue"),
              lty=1,lwd=2, bty="n",cex=0.8)
       
       barplot(C~edad,col="lightblue",xlab="Relative age",ylab="Density",
