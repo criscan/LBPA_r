@@ -325,27 +325,26 @@ LBPA_fits=function(name,graph_opt,save_opt){
       matplot(Talla,pobs,type="l",lty=1, col="darkgray",xlab="Length", ylab="Proportion",main="LBPA model fit",cex.main = 1.,lwd=2.)
       lines(Talla,ppred ,type="l", col="red",lwd=2)
       legend("topright",c("data","model"),col=c("gray","red"),
-             lty=1,lwd=2,bty="n",cex=0.9)
+             lty=1,lwd=2,bty="n")
       
       
       par(mfrow = c(1, 2))
       plot(Talla,ppred ,type="l", col="red",lwd=2,xlab="Length", ylab="Proportion",
-           main="LBPA model fit", ylim=c(0,max(pobs)),cex.main = 1.)
+           main="LBPA model fit", ylim=c(0,max(pobs)))
       
       # pobs=fobs
       
       for (i in 2:length(datos[1,])) {
-        lines(Talla,pobs[,i-1],type="p",col="gray",pch=20,cex=1.5)
+        lines(Talla,pobs[,i-1],type="p",col="gray",pch=20)
         #  pobs[,i-1]=fobs[,i-1]/sum(fobs[,i-1])
       }
       
       lines(Talla,ppred, col="red",lwd=2)
       legend("topright",c("data","model"),col=c("gray","red"),
-             lty=1,lwd=2,bty="n",cex=0.9)
+             lty=1,lwd=2,bty="n")
       
       
-      hist(res,prob=T,main="Residuals",cex.lab = 1.,
-           cex.axis = 1.,ylab="Density",xlab="Normalized residual",cex.main = 1.)
+      hist(res,prob=T,main="Residuals",ylab="Density",xlab="Normalized residual")
       x <- seq(min(res), max(res), length = 200)
       lines(x, dnorm(x), col = "red", lwd = 2)
       box()
@@ -353,7 +352,7 @@ LBPA_fits=function(name,graph_opt,save_opt){
       
       par(mfrow = c(2, 2))    
       plot(Talla,pdf[1,]*N[1],type="l",col="green",lwd=2,
-           xlab="Length", ylab="Proportion",main="Recruitment and age groups",cex.main = 1.)
+           xlab="Length", ylab="Proportion",main="Recruitment and age groups")
       for (i in 2:length(N)-1) {
         lines(Talla,pdf[i,]*N[i],col="black")}
       lines(Talla,pdf[1,]*N[1],type="l",col="green",lwd=2)
@@ -361,53 +360,53 @@ LBPA_fits=function(name,graph_opt,save_opt){
       abline(v=Lr,lty=2)
       text(Lr*1.05,0.01,paste("Lr=",round(Lr,2)),col="red",lwd=2)
       legend("topright",c("recruitment","age-groups"),col=c("green","black"),
-             lty=c(1,1),lwd=c(2,1),bty="n",cex=0.9)
+             lty=c(1,1),lwd=c(2,1),bty="n")
       
       
       plot(Talla,1/(1+exp(-log(19)*(Talla-L50)/(slope))),type="l",col="green",lwd=2,
-           xlab="Length", ylab="Proportion",main="Selectivity and maturity",cex.main = 1.)
+           xlab="Length", ylab="Proportion",main="Selectivity and maturity")
       lines(Talla,1/(1+exp(-log(19)*(Talla-L50m)/(L95m-L50m))),type="l",col="blue",lwd=2)
       abline(h=0.5,lty=2)
       abline(v=L50,lty=2)
       legend(max(Talla)*0.7,0.95,c("Maturity","Selectivity"),col=c("blue","green"),
-             lty=1,lwd=2,bty="n",cex=0.9)
+             lty=1,lwd=2,bty="n")
       text(L50*1.1,0.05,paste("L50=",round(L50,2)),col="red")
       
       
       
       
       plot(ypr$Fref,YPR_eq/max(YPR_eq),type="l", col="blue",lwd=2,xlab="Fishing mortality",ylab="Biomass, Yield",
-           main="Equilibrium curves",ylim=c(0,1),cex.main = 1.)
+           main="Equilibrium curves",ylim=c(0,1))
       lines(ypr$Fref,BPR_eq/max(BPR_eq),type="l", col="green",lwd=2)
       abline(h=target,lty=2)
       abline(v=ypr$Fref[id],lty=2)
       abline(v=Fcr,lty=2)
       
-      lines(Fcr,SPR,type="p",pch=20,cex=2.0)
-      text(ypr$Fref[id]*1.2,target*1.1,paste("Fmsy=",round(ypr$Fref[id],2)),col="red",cex=0.9)
-      text(Fcr*1.1,0.05,paste("Fcr=",round(Fcr,2)),col="red",cex=0.9)
+      lines(Fcr,SPR,type="p",pch=20)
+      text(ypr$Fref[id]*1.2,target*1.1,paste("Fmsy=",round(ypr$Fref[id],2)),col="red")
+      text(Fcr*1.1,0.05,paste("Fcr=",round(Fcr,2)),col="red")
       legend("topright",c("Yield","Biomass"),col=c("blue","green"),
-             lty=1,lwd=2,bty="n",cex=0.9)
+             lty=1,lwd=2,bty="n")
       
       
       
       eje=c("a) Unfished","b) Target","c) Current")
       resp=c(1,target,SPR)
       barplot(resp~eje,ylab="Proportion",xlab="Biomass",main="Proportion of B0",ylim=c(0,1.1),
-              col=c("lightgreen","lightblue","gray"),cex.main = 1.)
+              col=c("lightgreen","lightblue","gray"))
       abline(h=target,lty=2)
       box()
       text(3,SPR+0.05,paste("SPR=",round(SPR,2)),col="red")
       
       barplot(N0~edad,col="lightblue",xlab="Relative age",ylab="Density",
-              main="Population at-age",cex.main = 1.)
+              main="Population at-age")
       barplot(N~edad, add = T,col = "gray")
       box()
       legend("topright",c("Unfished","Current"),col=c("lightblue","gray","blue"),
-             lty=1,lwd=2, bty="n",cex=0.8)
+             lty=1,lwd=2, bty="n")
       
       barplot(C~edad,col="lightblue",xlab="Relative age",ylab="Density",
-              main="Catch at-age",cex.main = 1.,ylim=c(0,max(C)*1.1))
+              main="Catch at-age",ylim=c(0,max(C)*1.1))
       box()
       
       
@@ -416,24 +415,24 @@ LBPA_fits=function(name,graph_opt,save_opt){
       plot(Talla,colSums(Nagelength), type="l", lwd=2, col="blue",
            ylab="Density",
            xlab="Length",
-           main="Population at-length",cex.main = 1.)
+           main="Population at-length")
       
       lines(Talla,colSums(Ntarlength),
-            type="l", cex.lab = 1.5,
+            type="l",
             lwd=2, lty=2,
             col="black",
             xlim = c(min(Talla),1.1*max(Talla)),
             ylim = c(0,max(Ctarlength)))
       
       lines(Talla,colSums(Nage0length),
-            type="l", cex.lab = 1.5,
+            type="l",
             lwd=2, lty=1,
             col="green",
             xlim = c(min(Talla),1.1*max(Talla)),
             ylim = c(0,max(Nagelength)))
       
       legend("topright",c("Current","Target","Unfished","age-groups"),col=c("blue","black","green","black"),
-             lty=c(1,2,1,1),lwd=c(2,2,2,1),bty="n",cex=0.8)
+             lty=c(1,2,1,1),lwd=c(2,2,2,1),bty="n")
       
       
       for (i in 1:Tmax) {
@@ -444,11 +443,11 @@ LBPA_fits=function(name,graph_opt,save_opt){
       plot(Talla,ppred, type="l", lwd=2, col="blue",
            ylab="Density",
            xlab="Length",
-           main="Catch at-length",cex.main = 1.)
+           main="Catch at-length")
       
       Ctarlength=Ctarlength/sum(Ctarlength)
       lines(Talla,colSums(Ctarlength),
-            type="l", cex.lab = 1.5,
+            type="l",
             lwd=2, lty=2,
             col="black",
             xlim = c(min(Talla),1.1*max(Talla)),
@@ -456,7 +455,7 @@ LBPA_fits=function(name,graph_opt,save_opt){
       
       Cagelength=Cagelength/sum(Cagelength)
       lines(Talla,Cagelength[1,],
-            type="l", cex.lab = 1.5,
+            type="l",
             xlim = c(min(Talla),1.1*max(Talla)),
             ylim = c(0,max(Cagelength)))
       
@@ -466,7 +465,7 @@ LBPA_fits=function(name,graph_opt,save_opt){
       }
       
       legend("topright",c("Current","Target","age-groups"),col=c("blue","black","black"),
-             lty=c(1,2,1),lwd=c(2,2,1),bty="n",cex=0.8)
+             lty=c(1,2,1),lwd=c(2,2,1),bty="n")
     }
     
     like=c(-sum,0.5*(data_list$prioris-log(c(L50,slope,Fcr,Lr,a0,cv)))^2/data_list$cv_par^2)
