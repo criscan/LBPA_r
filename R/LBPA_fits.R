@@ -368,7 +368,7 @@ LBPA_fits=function(name,graph_opt,save_opt){
       lines(Talla,1/(1+exp(-log(19)*(Talla-L50m)/(L95m-L50m))),type="l",col="blue",lwd=2)
       abline(h=0.5,lty=2)
       abline(v=L50,lty=2)
-      legend(max(Talla)*0.7,0.95,c("Maturity","Selectivity"),col=c("blue","green"),
+      legend("topright",c("Maturity","Selectivity"),col=c("blue","green"),
              lty=1,lwd=2,bty="n")
       text(L50*1.1,0.05,paste("L50=",round(L50,2)),col="red")
       
