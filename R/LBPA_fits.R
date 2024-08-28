@@ -467,26 +467,6 @@ LBPA_fits=function(name,graph_opt,save_opt){
       legend("topright",c("Current","Target","age-groups"),col=c("blue","black","black"),
              lty=c(1,2,1),lwd=c(2,2,1),bty="n")
 
-   #Kobeplot-----------------------
-     par(mfrow = c(1, 1))
-     maxX=max(BPR_eq/BPR_eq[id))
-     maxY=max(ypr$Fref)/ypr$Fref[id]
-
-     plot(0,0,type="l", col="gray",lwd=2,
-     ylab="F/Fmsy",xlab="B/Bmsy",main="Kobe plot",ylim=c(0,1.1*maxY),xlim=c(0,maxX))#,cex.main = 1.)
-     polygon(c(0,1,1,0),c(0,0,1,1),col="yellow1") 
-     polygon(c(1,2.5,2.5,1),c(0,0,1,1),col="green") 
-     polygon(c(1,2.5,2.5,1),c(1,1,maxY,maxY),col="yellow1")
-     polygon(c(0,1,1,0),c(1,1,maxY,maxY),col="tomato1")
-
-     lines(Fcr/ypr$Fref[id],SPR/target,type="p",pch=20,cex=2.0)
-
-     abline(v=.5,lty=2)
-
-     lines(SPRtar,Fcr/ypr$Fref[id],lty=2)
-
-     box()
-   
     }
     
     like=c(-sum,0.5*(data_list$prioris-log(c(L50,slope,Fcr,Lr,a0,cv)))^2/data_list$cv_par^2)
