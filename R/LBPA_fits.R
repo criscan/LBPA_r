@@ -10,12 +10,11 @@
 
 LBPA_fits=function(name,graph_opt,save_opt){
   
-  
-  #Likelihood function---------------
+
+#Likelihood function-------------------------------
   
   ferrLBPA<-function(parini,data_list){
-    
-    
+
     Loo=data_list$parbiol[1]
     k=data_list$parbiol[2]
     M=data_list$parbiol[3]
@@ -114,7 +113,7 @@ LBPA_fits=function(name,graph_opt,save_opt){
       sum=sum+nm*lambda[i-1]*sum(fobs[,i-1]/sum(fobs[,i-1])*log(ppred))
     }
     
-    #penalizacion de parametros
+    #penalties on parameters
     penal=0.5*sum((data_list$prioris-log(c(L50,slope,Fcr,Lr,a0,cv)))^2/data_list$cv_par^2)
     
     fun=-sum+penal
@@ -126,7 +125,7 @@ LBPA_fits=function(name,graph_opt,save_opt){
   }
   
   
-  # per-recruit function---------------------
+# per-recruit function----------------------------------
   
   apr_out <- function(Sel, M, Mad, Wage, Tmax, Fcr, Ftar, dtm) {
     
@@ -166,13 +165,11 @@ LBPA_fits=function(name,graph_opt,save_opt){
   }
   
   
-  #Graphics function---------------
+  #Graphics function--------------------------------------------
   
   grafLBPA<-function(parfin,data_list){
     
-    
-    #Main script---------------
-    
+
     
     Loo=data_list$parbiol[1]
     k=data_list$parbiol[2]
@@ -224,7 +221,6 @@ LBPA_fits=function(name,graph_opt,save_opt){
     Sel_l=1/(1+exp(-log(19)*(Talla-L50)/(slope)))
     
     ypr <- apr_out(Sel, M, Mad, Wage, Tmax, Fcr, Fcr, dtm)
-    
     B0=ypr$B0
     N0=ypr$N0
     C=ypr$Ccurr
@@ -270,8 +266,7 @@ LBPA_fits=function(name,graph_opt,save_opt){
     
     #penalizacion de parametros
     penal=sum(0.5*(data_list$prioris-log(c(L50,slope,Fcr,Lr,a0,cv)))^2/data_list$cv_par^2)
-    
-    
+
     
     pobs=fobs/matrix(1,length(datos[,1]),1)%*%colSums(fobs)
     unos=matrix(1,length(fobs[1,]),1)
@@ -282,21 +277,18 @@ LBPA_fits=function(name,graph_opt,save_opt){
     Sel=1/(1+exp(-log(19)*(Lage-L50)/(slope)))
     Mad=1/(1+exp(-log(19)*(Lage-L50m)/(L95m)))
     
-   # ypr <- apr_out(Sel, M, Mad, Wage, Tmax, Fcr, dtm)
-    
+
     BPR_eq=alfa*ypr$BPR-beta
     Reclu=alfa*BPR_eq/(beta+BPR_eq)
     YPR_eq=ypr$YPR*Reclu
     
-    
-    
     id=which(BPR_eq/BPR_eq[1]<target)[1]
+    BPRtar=BPR_eq[id]
     YPRtar=YPR_eq[id]
     Ftar=ypr$Fref[id]
     id2=which(BPR_eq/BPR_eq[1]<SPR)[1]
     YPRcur=YPR_eq[id2]
     
-    ypr <- apr_out(Sel, M, Mad, Wage, Tmax, Fcr, Ftar, dtm)
     Ctar=ypr$Ccurr
     Ntar=ypr$Ncurr
     Cagelength<-pdf
@@ -322,7 +314,7 @@ LBPA_fits=function(name,graph_opt,save_opt){
       
       par(mfrow = c(1, 1))
       
-      matplot(Talla,pobs,type="l",lty=1, col="darkgray",xlab="Length", ylab="Proportion",main="LBPA model fit",cex.main = 1.,lwd=2.)
+      matplot(Talla,pobs,type="b",lty=1, col="darkgray",xlab="Length", ylab="Proportion",main="LBPA model fit",cex.main = 1.,lwd=2.)
       lines(Talla,ppred ,type="l", col="red",lwd=2)
       legend("topright",c("data","model"),col=c("gray","red"),
              lty=1,lwd=2,bty="n")
@@ -335,8 +327,7 @@ LBPA_fits=function(name,graph_opt,save_opt){
       # pobs=fobs
       
       for (i in 2:length(datos[1,])) {
-        lines(Talla,pobs[,i-1],type="p",col="gray",pch=20)
-        #  pobs[,i-1]=fobs[,i-1]/sum(fobs[,i-1])
+        lines(Talla,pobs[,i-1],type="p",col="gray",pch=20,cex=1.5)
       }
       
       lines(Talla,ppred, col="red",lwd=2)
@@ -364,13 +355,13 @@ LBPA_fits=function(name,graph_opt,save_opt){
       
       
       plot(Talla,1/(1+exp(-log(19)*(Talla-L50)/(slope))),type="l",col="green",lwd=2,
-           xlab="Length", ylab="Proportion",main="Selectivity and maturity")
+           xlab="Length", ylab="Proportion",main="Selectivity and maturity",ylim=c(0,1))
       lines(Talla,1/(1+exp(-log(19)*(Talla-L50m)/(L95m-L50m))),type="l",col="blue",lwd=2)
       abline(h=0.5,lty=2)
       abline(v=L50,lty=2)
       legend("topright",c("Maturity","Selectivity"),col=c("blue","green"),
              lty=1,lwd=2,bty="n")
-      text(L50*1.1,0.05,paste("L50=",round(L50,2)),col="red")
+      text(L50*1.05,0.05,paste("L50=",round(L50,2)),col="red")
       
       
       
@@ -383,7 +374,7 @@ LBPA_fits=function(name,graph_opt,save_opt){
       abline(v=Fcr,lty=2)
       
       lines(Fcr,SPR,type="p",pch=20)
-      text(ypr$Fref[id]*1.2,target*1.1,paste("Fmsy=",round(ypr$Fref[id],2)),col="red")
+      text(ypr$Fref[id],target*1.1,paste("Fmsy=",round(ypr$Fref[id],2)),col="red")
       text(Fcr*1.1,0.05,paste("Fcr=",round(Fcr,2)),col="red")
       legend("topright",c("Yield","Biomass"),col=c("blue","green"),
              lty=1,lwd=2,bty="n")
@@ -466,6 +457,24 @@ LBPA_fits=function(name,graph_opt,save_opt){
       
       legend("topright",c("Current","Target","age-groups"),col=c("blue","black","black"),
              lty=c(1,2,1),lwd=c(2,2,1),bty="n")
+      
+      
+      #kobe plot     
+      par(mfrow = c(1, 1))        
+      maxY=max(ypr$Fref/Ftar)
+      maxX=max(BPR_eq/BPRtar)
+      plot(0,0,type="l", col="gray",lwd=2,
+           ylab="F/Fmsy",xlab="B/Bmsy",main="Kobe plot",ylim=c(0,maxY),xlim=c(0,maxX))
+
+       polygon(c(0,1,1,0),c(0,0,1,1),col="yellow1") 
+       polygon(c(1,maxX,maxX,1),c(0,0,1,1),col="green") 
+       polygon(c(1,maxX,maxX,1),c(1,1,maxY,maxY),col="yellow1")
+       polygon(c(0,1,1,0),c(1,1,maxY,maxY),col="tomato1")
+       
+       lines(SPR/target,Fcr/Ftar,type="p",pch=3,cex=3.0,lwd=2)
+       lines(BPR_eq/BPRtar,ypr$Fref/Ftar,lty=2)
+      
+      
 
     }
     
@@ -509,14 +518,20 @@ LBPA_fits=function(name,graph_opt,save_opt){
   
   
   #tamaño muestra
-  nm=250
+  nm=500
   
   data_list=list(datos=datos,parbiol=parbiol,nm=nm,cv_par=cvpar,prioris=parini,lambda=lambda)
-  pars_fin=optim(par=parini,fn=ferrLBPA, data=data_list, method="BFGS")
+  pars_fin=optim(par=parini,fn=ferrLBPA, data=data_list, method="BFGS",hessian=T)
+  hess=pars_fin$hessian
+  
+  mcov=solve(hess)
+  parfin=exp(pars_fin$par)
+  sd_par=sqrt(diag(mcov))*parfin
+  
+  
   target=parbiol[10]
   
   
-  parfin=exp(pars_fin$par)
   solucion=data.frame(L50=parfin[1],slope=parfin[2],Fcr=parfin[3],Lr=parfin[4],a0=parfin[5],cv=parfin[6],LL=pars_fin$value)
   
   
@@ -524,10 +539,10 @@ LBPA_fits=function(name,graph_opt,save_opt){
   
   BYPR=data.frame(Fref=v$Fref,YPR=v$YPReq,BPR=v$BPReq,pR0=v$pR0)
   
-  table1 <- matrix(ncol=1, round(solucion[1:6], 2))
+  table1 <- matrix(cbind(round(parfin,2),round(sd_par,3)),length(parfin),2)
   rownames(table1) <- c("Selectivity length at 50% (L50)", "Slope (d)","Fishing mortality (Fcr)",
                         "Size of recruits (Lr)","Invariant std in length (a0)", "Coeff of variation length at-age (cv)")
-  colnames(table1)<-"Value"
+  colnames(table1)<-c("Value","sd")
   
   B0=v$BPReq[1]
   
@@ -543,8 +558,7 @@ LBPA_fits=function(name,graph_opt,save_opt){
   
   
   table4=data.frame(Fref=v$Fref,BPReq=v$BPReq,YPReq=v$YPReq)
-  #colnames(table4)<-"Value"
-  
+
   if(save_opt==T){
     
     write.csv(table1, 'Parameters_LBPA.csv',row.names = T)
@@ -556,10 +570,7 @@ LBPA_fits=function(name,graph_opt,save_opt){
     write.csv(table4, 'Per_recruit.csv', row.names = F)
   }
   
-  # print(knitr::kable(table1,"simple",caption = "1: Estimated parameters"))
-  # print(knitr::kable(table2,"simple",caption = "2: Per-recruit population's variables"))
-  # print(knitr::kable(table3,"simple",caption = "3: Log-likelihood components"))
-  
+
   vars_at_age=data.frame(Age=v$Age_r,L_age=v$length_age,sd_age=v$sd_age,Select=v$Select,Matur=v$Matur,W_age=v$W_age,N0=v$N0_age,
                          N=v$N_age,F=v$F_age,Z=v$Z_age)
   
@@ -568,6 +579,7 @@ LBPA_fits=function(name,graph_opt,save_opt){
   output=list(table1=table1,table2=table2,table3=table3,Per_recruit=BYPR,vars_at_age=vars_at_age,prob_length_age=prob_length_age,Length=v$Length,LFpred=v$LFpred,LFobs=v$LFobs)
   
   return(output)
+  
   
   
 }
