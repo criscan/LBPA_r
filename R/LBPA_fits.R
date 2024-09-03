@@ -152,6 +152,11 @@ LBPA_fits=function(name,graph_opt,save_opt){
         Ncurr=N
         Ccurr=C
       }
+
+      if(Fref[j]<Ftar){
+        Ntar=N
+        Ctar=C
+      }
       
       if(j==1){
         N0=N
@@ -159,7 +164,8 @@ LBPA_fits=function(name,graph_opt,save_opt){
       
     }
     B0=sum(N0*Mad*Wage*exp(-dtm*M))
-    apr_out=list(Fref=Fref,BPR=BPR,YPR=YPR,Ncurr=Ncurr,Ccurr=Ccurr,B0=B0,N0=N0)
+    apr_out=list(Fref=Fref,BPR=BPR,YPR=YPR,Ncurr=Ncurr,Ccurr=Ccurr,B0=B0,N0=N0,
+                ,Ntar=Ntar,Ctar=Ctar)
     
     return(apr_out)
   }
@@ -289,8 +295,8 @@ LBPA_fits=function(name,graph_opt,save_opt){
     id2=which(BPR_eq/BPR_eq[1]<SPR)[1]
     YPRcur=YPR_eq[id2]
     
-    Ctar=ypr$Ccurr
-    Ntar=ypr$Ncurr
+    Ctar=ypr$Ctar
+    Ntar=ypr$Ntar
     Cagelength<-pdf
     Ctarlength<-pdf
     Nagelength<-pdf
@@ -401,21 +407,24 @@ LBPA_fits=function(name,graph_opt,save_opt){
       box()
       
       
+      y1=colSums(Nagelength)
+      y2=colSums(Ntarlength)
+      y3=colSums(Nage0length)     
       
-      
-      plot(Talla,colSums(Nagelength), type="l", lwd=2, col="blue",
+      plot(Talla,y1, type="l", lwd=2, col="blue",
            ylab="Density",
            xlab="Length",
-           main="Population at-length")
+           main="Population at-length",
+           ylim=c(0,max(rbind(y1,y2,y3))))
       
-      lines(Talla,colSums(Ntarlength),
+      lines(Talla,y2,
             type="l",
             lwd=2, lty=2,
             col="black",
             xlim = c(min(Talla),1.1*max(Talla)),
             ylim = c(0,max(Ctarlength)))
       
-      lines(Talla,colSums(Nage0length),
+      lines(Talla,y3,
             type="l",
             lwd=2, lty=1,
             col="green",
@@ -490,7 +499,7 @@ LBPA_fits=function(name,graph_opt,save_opt){
   
   
   
-  graphics.off()
+  #graphics.off()
   library(readxl)
   
   # Archivo con los datos
