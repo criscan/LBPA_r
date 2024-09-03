@@ -546,7 +546,6 @@ LBPA_fits=function(name,graph_opt,save_opt){
   
   v=grafLBPA(parfin,data_list)
   
-  BYPR=data.frame(Fref=v$Fref,YPR=v$YPReq,BPR=v$BPReq,pR0=v$pR0)
   
   table1 <- matrix(cbind(round(parfin,2),round(sd_par,3)),length(parfin),2)
   rownames(table1) <- c("Selectivity length at 50% (L50)", "Slope (d)","Fishing mortality (Fcr)",
@@ -570,13 +569,20 @@ LBPA_fits=function(name,graph_opt,save_opt){
 
   if(save_opt==T){
     
-    write.csv(table1, 'Parameters_LBPA.csv',row.names = T)
+    library(openxlsx)
+    wb <- createWorkbook()
+    addWorksheet(wb, "Table1_Parameters")
+    addWorksheet(wb, "Table2_Variables")
+    addWorksheet(wb, "Table3_Likelihood")
+    addWorksheet(wb, "Table4_YPReq")
     
-    write.csv(table2, 'Variables_LBPA.csv', row.names = T)
     
-    write.csv(table3, 'logLL_LBPA.csv', row.names = T)
+    writeData(wb, sheet = "Table1_Parameters", x = table1, rowNames = T )
+    writeData(wb, sheet = "Table2_Variables", x = table2, rowNames = T )
+    writeData(wb, sheet = "Table3_Likelihood", x = table3, rowNames = T )
+    writeData(wb, sheet = "Table4_YPReq", x = table4)
     
-    write.csv(table4, 'Per_recruit.csv', row.names = F)
+    saveWorkbook(wb,paste("Outcomes_",name), overwrite = TRUE)
   }
   
 
