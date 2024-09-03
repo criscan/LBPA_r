@@ -165,7 +165,7 @@ LBPA_fits=function(name,graph_opt,save_opt){
     }
     B0=sum(N0*Mad*Wage*exp(-dtm*M))
     apr_out=list(Fref=Fref,BPR=BPR,YPR=YPR,Ncurr=Ncurr,Ccurr=Ccurr,B0=B0,N0=N0,
-                ,Ntar=Ntar,Ctar=Ctar)
+                 Ntar=Ntar,Ctar=Ctar)
     
     return(apr_out)
   }
