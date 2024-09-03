@@ -545,7 +545,7 @@ LBPA_fits=function(name,graph_opt,save_opt){
   
   
   v=grafLBPA(parfin,data_list)
-  
+  BYPR=data.frame(Fref=v$Fref,YPR=v$YPReq,BPR=v$BPReq,pR0=v$pR0)
   
   table1 <- matrix(cbind(round(parfin,2),round(sd_par,3)),length(parfin),2)
   rownames(table1) <- c("Selectivity length at 50% (L50)", "Slope (d)","Fishing mortality (Fcr)",
