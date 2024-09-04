@@ -295,8 +295,8 @@ LBPA_fits=function(name,graph_opt,save_opt){
     id2=which(BPR_eq/BPR_eq[1]<SPR)[1]
     YPRcur=YPR_eq[id2]
     
-    Ctar=ypr$Ctar
     ypr <- apr_out(Sel, M, Mad, Wage, Tmax, Fcr, Ftar, dtm)
+    Ctar=ypr$Ctar
     Ntar=ypr$Ntar
     Cagelength<-pdf
     Ctarlength<-pdf
