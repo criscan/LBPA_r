@@ -316,7 +316,7 @@ LBPA_fits=function(name,graph_opt,save_opt){
     }
     
     
-    edad=c(1:Tmax)
+    edad=c(1:Tmax)+tr-1
     
     
     
