@@ -29,6 +29,9 @@ LBPA_fits=function(name,graph_opt,save_opt){
     lambda=data_list$lambda
     
     Tmax=round(-log(0.025)/M)
+    tr=round(-1/k*log(1-Lr/Loo)+0.5)
+    Tmax=Tmax-tr
+
     age=rep(0,Tmax)
     Lage=rep(0,Tmax)
     
@@ -175,8 +178,6 @@ LBPA_fits=function(name,graph_opt,save_opt){
   
   grafLBPA<-function(parfin,data_list){
     
-
-    
     Loo=data_list$parbiol[1]
     k=data_list$parbiol[2]
     M=data_list$parbiol[3]
@@ -191,7 +192,9 @@ LBPA_fits=function(name,graph_opt,save_opt){
     lambda=data_list$lambda
     
     Tmax=round(-log(0.025)/M)
-    age=seq(1,Tmax)
+    tr=round(-1/k*log(1-Lr/Loo)+0.5)
+    Tmax=Tmax-tr
+    age=seq(tr,Tmax)
     Lage=rep(0,Tmax)
     
     
@@ -490,7 +493,7 @@ LBPA_fits=function(name,graph_opt,save_opt){
     
     like=c(-sum,0.5*(data_list$prioris-log(c(L50,slope,Fcr,Lr,a0,cv)))^2/data_list$cv_par^2)
     
-    outputs=list(Age_r=age,length_age=Lage,sd_age=sd_age,Select=Sel,Matur=Mad,W_age=Wage,N0_age=N0,N_age=N,F_age=Sel*Fcr,Z_age=Z,C_age=C,a_SR=alfa,b_SR=beta,Plength_age=pdf,
+    outputs=list(Age_r=edad,length_age=Lage,sd_age=sd_age,Select=Sel,Matur=Mad,W_age=Wage,N0_age=N0,N_age=N,F_age=Sel*Fcr,Z_age=Z,C_age=C,a_SR=alfa,b_SR=beta,Plength_age=pdf,
                  Fref=ypr$Fref,BPReq=BPR_eq,YPReq=YPR_eq,pR0=Reclu,SPR=SPR,Fcur=Fcr,Ftar=Ftar,YPRtar=YPRtar,YPRcur=YPRcur,LL=like,Length=Talla,LFpred=ppred,LFobs=pobs)
     
     return(outputs)
@@ -500,7 +503,6 @@ LBPA_fits=function(name,graph_opt,save_opt){
   
   
   
-  #graphics.off()
   library(readxl)
   
   # Archivo con los datos
