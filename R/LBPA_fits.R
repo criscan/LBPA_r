@@ -569,6 +569,9 @@ LBPA_fits=function(name,graph_opt,save_opt){
   
   
   table4=data.frame(Fref=v$Fref,BPReq=v$BPReq,YPReq=v$YPReq)
+  vars_at_age=data.frame(Age=v$Age_r,L_age=v$length_age,sd_age=v$sd_age,Select=v$Select,Matur=v$Matur,W_age=v$W_age,N0=v$N0_age,
+                         N=v$N_age,F=v$F_age,Z=v$Z_age)
+
 
   if(save_opt==T){
     
@@ -578,12 +581,15 @@ LBPA_fits=function(name,graph_opt,save_opt){
     addWorksheet(wb, "Table2_Variables")
     addWorksheet(wb, "Table3_Likelihood")
     addWorksheet(wb, "Table4_YPReq")
+    addWorksheet(wb, "Table5_Vars_at_Age")
     
     
     writeData(wb, sheet = "Table1_Parameters", x = table1, rowNames = T )
     writeData(wb, sheet = "Table2_Variables", x = table2, rowNames = T )
     writeData(wb, sheet = "Table3_Likelihood", x = table3, rowNames = T )
     writeData(wb, sheet = "Table4_YPReq", x = table4)
+    writeData(wb, sheet = "Table5_Vars_at_Age", x = vars_at_age)
+
     
     saveWorkbook(wb,paste("Outcomes_",name), overwrite = TRUE)
   }
