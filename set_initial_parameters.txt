@@ -7,7 +7,7 @@ Consider the following suggestions to set the initial model parameters
 #coefficients of variation
  0.1	       0.5	     0.5   0.2	       0.5	     0.5
 
-If standard deviation of length at-age is assumed to be invariant (cv=0), the initial a0 value should be around 0.1L0.
+If the standard deviation of length at-age is assumed to be invariant (cv=0), the initial a0 value should be around 0.1L0.
 The coefficient of variations represents the expected error around the initial parameter values
 
 
