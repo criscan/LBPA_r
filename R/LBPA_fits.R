@@ -28,7 +28,7 @@ LBPA_fits=function(name,graph_opt,save_opt){
     nm=data_list$nm
     lambda=data_list$lambda
     
-    Tmax=round(-log(0.025)/M)
+    Tmax=round(-log(0.01)/M)
     tr=round(-1/k*log(1-Lr/Loo)+0.5)
     Tmax=Tmax-tr
 
@@ -191,7 +191,7 @@ LBPA_fits=function(name,graph_opt,save_opt){
     nm=data_list$nm
     lambda=data_list$lambda
     
-    Tmax=round(-log(0.025)/M)
+    Tmax=round(-log(0.01)/M)
     tr=round(-1/k*log(1-Lr/Loo)+0.5)
     Tmax=Tmax-tr
     age=seq(tr,Tmax)
