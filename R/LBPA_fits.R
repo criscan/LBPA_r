@@ -317,6 +317,9 @@ LBPA_fits <- function(name, graph_opt, save_opt) {
       
       plot(Fref,YPR_eq/max(YPR_eq),type="l", col="blue",lwd=2,xlab="Fishing mortality",ylab="Biomass, Yield",
            main="Equilibrium curves",ylim=c(0,1))
+
+      if(Fcr>max(Fref)){text(max(Fref)*.95,0.05,paste("Fcr>",round(max(Fref),2)),col="red")}
+      
       lines(Fref,BPR_eq/max(BPR_eq),type="l", col="green",lwd=2)
       abline(h=target,lty=2)
       abline(v=Ftar,lty=2)
@@ -413,7 +416,7 @@ LBPA_fits <- function(name, graph_opt, save_opt) {
       
       #kobe plot
       par(mfrow = c(1, 1))
-      maxY=max(2,Fref/Ftar)
+      maxY=max(2,Fref/Ftar*1.2)
       BPRtar=BPR_eq[1]*target
       maxX=max(2,BPR_eq/BPRtar)
       plot(0,0,type="l", col="gray",lwd=2,
