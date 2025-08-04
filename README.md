@@ -30,6 +30,6 @@ b. Biological parameters
 c. Start values for model's parameters and its coefficient of variation. Each model parameter is assumed to follow a lognormal distribution with mean mu=log(a priori value) and standard deviation sd=cv.
 d. Weighting factors for each LF considered    
 
-The model can be run as model1=LBPA_fits("filename.xlsx",graph_opt=T or F, save_opt=T or F). An example of a data file (.xlsx) was added and can be downloaded before package installation. After running, if save_opt=T, an Excel (xlsx) file will be produced with five sheets: model parameters, model variables, likelihood components values, per recruits analysis, and different population variables by age. In the same context, several graphics of the model will be generated if graph_opt=T
+The model can be run as model1=LBPA_fits("filename.xlsx",graph_opt=T or F, save_opt=T or F). An example of a data file (.xlsx) was added and can be downloaded after package installation. After running, if save_opt=T, an Outcomes Excel (xlsx) file will be produced with three sheets: estimated parameters, population variables and likelihood components values. Other variables are also produced in model1 object (e.g per recruits analysis, different population variables by age, etc). In the same context, if graph_opt=T, several graphics of the model will be generated. 
 
 For any question: cristian.canales.r@pucv.cl
