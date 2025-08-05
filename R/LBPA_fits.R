@@ -416,7 +416,7 @@ LBPA_fits <- function(name, graph_opt, save_opt) {
       
       #kobe plot
       par(mfrow = c(1, 1))
-      maxY=max(2,Fref/Ftar*1.2)
+      maxY=max(2,Fcr/Ftar*1.2)
       BPRtar=BPR_eq[1]*target
       maxX=max(2,BPR_eq/BPRtar)
       plot(0,0,type="l", col="gray",lwd=2,
