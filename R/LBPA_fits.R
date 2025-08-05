@@ -486,11 +486,11 @@ LBPA_fits <- function(name, graph_opt, save_opt) {
                  Fcr=r2$Fcur,
                  SPR=SPR)
   
-    if(graph_opt==T){
+    if(graph_opt[1]==T){
   LBPA_graph(data_graph)
     }
 
-    if(save_opt==T){
+    if(save_opt[1]==T){
       
       library(openxlsx)
       wb <- createWorkbook()
