@@ -454,9 +454,9 @@ LBPA_fits <- function(name, graph_opt, save_opt) {
   colnames(table1)<-c("Value","sd")
   
   SPR=r2$BPRcur/r2$B0
-  table2 <- matrix(ncol=1, round(c(r2$B0, r2$BPRcur, r2$BPRtar, SPR, target, r2$Ftar,r2$Fcur/r2$Ftar,r2$YPRcur,r2$YPRtar),2))
+  table2 <- matrix(ncol=1, round(c(r2$B0, r2$BPRcur, r2$BPRtar, SPR, SPR/target, r2$Ftar,r2$Fcur/r2$Ftar,r2$YPRcur,r2$YPRtar),2))
   rownames(table2) <- c("Virginal biomass per-recruit (BPR0)", "Current BPR", "Target BPR","Current spawning potential ratio (SPR)",
-                         "Target SPR (SPRtar)", "Target fishing mortality (Ftar)","Overfishing index (F/Ftar)",
+                         "Overexploitation index (SPR/SPRtar)", "Target fishing mortality (Ftar)","Overfishing index (F/Ftar)",
                          "Current yield per-recruit (YPRcur)","Target  yield per-recruit (YPRtar)")
   colnames(table2)<-"Value"
   
