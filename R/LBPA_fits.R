@@ -257,11 +257,6 @@ LBPA_fits <- function(name, graph_opt, save_opt) {
       Nage0length<-pdf
       Ntarlength<-pdf
       
-      print(paste("Nedades=",nedades))
-      print(paste("tr=",tr))
-      print(paste("dim_pdf=",dim(pdf)))
-      print(paste("dim_Ctar=",length(Ctar)))
-      
       C=C[tr:Tmax]
       Ctar=Ctar[tr:Tmax]
       Ntar=Ntar[tr:Tmax]
