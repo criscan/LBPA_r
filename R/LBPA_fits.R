@@ -72,22 +72,12 @@ LBPA_fits <- function(name, graph_opt, save_opt) {
       Z     <- Fmort + parbiol[3]
       
       N  <- rep(1, Nages)
-      N0 <- rep(1, Nages)
       for (i in 2:Nages) {
-        N0[i] <- N0[i - 1] * exp(-parbiol[3])
         N[i]  <- N[i - 1] * exp(-Z[i - 1])
       }
-      N0[Nages] <- N0[Nages] / (1 - exp(-parbiol[3]))
       N[Nages]  <- N[Nages] / (1 - exp(-Z[Nages]))
       
       C  <- N * Fmort / Z * (1 - exp(-Z))
-      B0 <- sum(N0 * Mad * Wage * exp(-parbiol[8] * parbiol[3]))
-      B  <- sum(N * Mad * Wage * exp(-parbiol[8] * Z))
-      
-      h    <- parbiol[9]
-      alfa <- 4 * h / (5 * h - 1)
-      beta <- (1 - h) / (5 * h - 1) * B0
-      SPR  <- (alfa * B - beta) / B0
       
       # Matriz talla-edad inversa
       dtalla <- Talla[2] - Talla[1]
@@ -151,26 +141,46 @@ LBPA_fits <- function(name, graph_opt, save_opt) {
     with(as.list(data_list), {
       par_vals <- params
       names(par_vals) <- c("L50", "slope", "Fcr", "Lr", "a0", "cv")
-
+      
       Tmax <- round(-log(0.01)/parbiol[3])
       tr   <- round(-1 / parbiol[2] * log(1 - par_vals[4] / parbiol[1]) - 0.5)
       age=c(tr:Tmax)
-
-      tar <- parbiol[10]
       
+      tar <- parbiol[10]
+
       Lage <- numeric(length(age))
       Lage[1] <- par_vals["Lr"]
       for (i in 2:length(age)) {
         Lage[i] <- Lage[i - 1] * exp(-parbiol[2]) + parbiol[1] * (1 - exp(-parbiol[2]))
       }
       
+      #Retrospective length
+      Lx=matrix(NA,1,50)
+      A=parbiol[1]*(1-exp(-parbiol[2]))
+      B=exp(-parbiol[2])
+      Lx[1]=Lage[1]
+      
+      aux=1
+      while(Lx[aux]>0){
+        aux=aux+1
+        Lx[aux]=(Lx[aux-1]-A)/B
+      }
+      
+      Lx=Lx[which(is.na(Lx)==FALSE)]
+      Lx=Lx[Lx>0]
+
+       
+      Lage=c(sort(Lx),Lage[2:length(Lage)])
+      Lage=Lage[1:Tmax]
+      
+
       sd_age <- par_vals["a0"] + par_vals["cv"] * Lage
       Sel    <- 1 / (1 + exp(-log(19) * (Lage - par_vals["L50"]) / par_vals["slope"]))
-      Mad    <- 1 / (1 + exp(-log(19) * (Lage - parbiol[6]) / parbiol[7]))
+      Mad    <- 1 / (1 + exp(-log(19) * (Lage - parbiol[6]) / (parbiol[7]-parbiol[6])))
       Wage   <- exp(parbiol[4]) * Lage^parbiol[5]
-
+      
       Fref<- seq(0,max(c(3*M,1.1*Fcr)),M/50) 
-      N<- rep(1,length(age))
+      N<- rep(1,length(Lage))
       YPR  <- rep(0,length(Fref))
       BPR  <- rep(0,length(Fref))
       dtm  <- parbiol[8]
@@ -178,7 +188,7 @@ LBPA_fits <- function(name, graph_opt, save_opt) {
       target=parbiol[10]
       Fcur=par_vals["Fcr"]
       
-      for (i in 2:length(age)) {
+      for (i in 2:Tmax) {
         N[i]=N[i-1]*exp(-M)
       }
       N[i]=N[i]/(1-exp(-M))
@@ -186,49 +196,50 @@ LBPA_fits <- function(name, graph_opt, save_opt) {
       alfa <- 4 * h / (5 * h - 1)
       beta <- (1 - h) / (5 * h - 1) * B0
 
-    for (j in 1:length(Fref)) {
-      F=Fref[j]*Sel
-      Z=F+M
-      
-      for (i in 2:length(age)) {
-        
-        N[i]=N[i-1]*exp(-Z[i-1])
-      }
-      N[i]=N[i]/(1-exp(-Z[i]))
-      
-      C<- N*F/Z*(1-exp(-Z))
-      BPR[j]<- alfa*sum(N*Mad*Wage*exp(-dtm*Z))-beta
-      YPR[j]<- sum(C*Wage)*alfa*BPR[j]/(beta+BPR[j])
-      
-      
-      if(Fref[j]<Fcur){
-        Ncurr=N
-        Ccurr=C
-        BPRcur=BPR[j]
-        YPRcur=YPR[j]
-      }
-      
-      if(j>1 && BPR[j]/BPR[1]>0.99*tar){
-        Ftar=Fref[j]
-        Ntar=N
-        Ctar=C
-        BPRtar=BPR[j]
-        YPRtar=YPR[j]
-      }
-      
-      if(j==1){
-        N0=N
-      }
-    }
-      
-    
-    apr_out=list(Fref=Fref,BPR=BPR,YPR=YPR,Ncurr=Ncurr,Ccurr=Ccurr,B0=B0,N0=N0,
-                 Ntar=Ntar,Ctar=Ctar,Ftar=Ftar,B0=B0,BPRtar=BPRtar,BPRcur=BPRcur,
-                 YPRtar=YPRtar,YPRcur=YPRcur,Fcur=Fcur)
-    
-    return(apr_out)
-    })}
 
+      for (j in 1:length(Fref)) {
+        F=Fref[j]*Sel
+        Z=F+M
+        
+        for (i in 2:Tmax) {
+          
+          N[i]=N[i-1]*exp(-Z[i-1])
+        }
+        N[i]=N[i]/(1-exp(-Z[i]))
+        
+        C<- N*F/Z*(1-exp(-Z))
+        BPR[j]<- alfa*sum(N*Mad*Wage*exp(-dtm*Z))-beta
+        YPR[j]<- sum(C*Wage)*alfa*BPR[j]/(beta+BPR[j])
+        
+        
+        if(Fref[j]<Fcur){
+          Ncurr=N
+          Ccurr=C
+          BPRcur=BPR[j]
+          YPRcur=YPR[j]
+        }
+        
+        if(j>1 && BPR[j]/BPR[1]>0.99*tar){
+          Ftar=Fref[j]
+          Ntar=N
+          Ctar=C
+          BPRtar=BPR[j]
+          YPRtar=YPR[j]
+        }
+        
+        if(j==1){
+          N0=N
+        }
+      }
+      
+      
+      apr_out=list(Fref=Fref,BPR=BPR,YPR=YPR,Ncurr=Ncurr,Ccurr=Ccurr,B0=B0,N0=N0,
+                   Ntar=Ntar,Ctar=Ctar,Ftar=Ftar,B0=B0,BPRtar=BPRtar,BPRcur=BPRcur,
+                   YPRtar=YPRtar,YPRcur=YPRcur,Fcur=Fcur)
+      
+      return(apr_out)
+    })}
+  
   
   # Función Gráficos----------------------------------------
   LBPA_graph=function(data_graph){
