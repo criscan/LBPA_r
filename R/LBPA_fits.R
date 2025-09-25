@@ -21,7 +21,7 @@ LBPA_fits <- function(name, graph_opt, save_opt) {
   
   if(length(parbiol)<10){stop("inssuficient biological parameters")}
   
-
+  
   # Parámetros biológicos y valores iniciales
   Talla <- datos[, 1]
   M     <- parbiol[3]
@@ -46,9 +46,9 @@ LBPA_fits <- function(name, graph_opt, save_opt) {
     with(as.list(data_list), {
       
       par_vals <- exp(parini)
-
+      
       names(par_vals) <- c("L50", "slope", "Fcr", "Lr", "a0", "cv")
-  
+      
       Tmax <- round(-log(0.01)/parbiol[3])
       
       key <- exp(prioris[4]) / parbiol[1]
@@ -78,7 +78,7 @@ LBPA_fits <- function(name, graph_opt, save_opt) {
       N[Nages]  <- N[Nages] / (1 - exp(-Z[Nages]))
       
       C  <- N * Fmort / Z * (1 - exp(-Z))
-      
+
       # Matriz talla-edad inversa
       dtalla <- Talla[2] - Talla[1]
       xs     <- 0.5 * dtalla
@@ -115,25 +115,25 @@ LBPA_fits <- function(name, graph_opt, save_opt) {
         for (i in 1:ncol(pobs)){
           pobs[,i]=pobs[,i]/sum(pobs[,i])
         }
-          
-        }
         
-        other_1=list(lprop=fun,
-                     lprior=priors,
-                     talla=datos[, 1],
-                     ppred=ppred,
-                     pobs=pobs,
-                     pdf=pdf,
-                     Sel=Sel,
-                     Wage=Wage,
-                     Mad=Mad,
-                     Fage=Fmort,
-                     Zage=Z,
-                     Nage=N,
-                     Cage=C
-                     )
-       return(other_1)
-
+      }
+      
+      other_1=list(lprop=fun,
+                   lprior=priors,
+                   talla=datos[, 1],
+                   ppred=ppred,
+                   pobs=pobs,
+                   pdf=pdf,
+                   Sel=Sel,
+                   Wage=Wage,
+                   Mad=Mad,
+                   Fage=Fmort,
+                   Zage=Z,
+                   Nage=N,
+                   Cage=C
+      )
+      return(other_1)
+      
     })}
   
   # Función YPR-----------------------------------------------------------
@@ -244,7 +244,7 @@ LBPA_fits <- function(name, graph_opt, save_opt) {
   # Función Gráficos----------------------------------------
   LBPA_graph=function(data_graph){
     with(as.list(data_graph), {
-
+      
       Tmax <- round(-log(0.01)/parbiol[3])
       tr   <- round(-1 / parbiol[2] * log(1 - params[4] / parbiol[1]) - 0.5)
       
@@ -256,6 +256,17 @@ LBPA_fits <- function(name, graph_opt, save_opt) {
       Nagelength<-pdf
       Nage0length<-pdf
       Ntarlength<-pdf
+      
+      print(paste("Nedades=",nedades))
+      print(paste("tr=",tr))
+      print(paste("dim_pdf=",dim(pdf)))
+      print(paste("dim_Ctar=",length(Ctar)))
+      
+      C=C[tr:Tmax]
+      Ctar=Ctar[tr:Tmax]
+      Ntar=Ntar[tr:Tmax]
+      Ncurr=Ncurr[tr:Tmax]
+      N0=N0[tr:Tmax]
       
       
       for (i in 1:nedades) {
@@ -328,7 +339,7 @@ LBPA_fits <- function(name, graph_opt, save_opt) {
       
       plot(Fref,YPR_eq/max(YPR_eq),type="l", col="blue",lwd=2,xlab="Fishing mortality",ylab="Biomass, Yield",
            main="Equilibrium curves",ylim=c(0,1))
-
+      
       if(Fcr>max(Fref)){text(max(Fref)*.95,0.05,paste("Fcr>",round(max(Fref),2)),col="red")}
       
       lines(Fref,BPR_eq/max(BPR_eq),type="l", col="green",lwd=2)
@@ -444,20 +455,20 @@ LBPA_fits <- function(name, graph_opt, save_opt) {
       
     })  
   }
-
+  
   # Optimización de parámetros
   pars_fin <- optim(par = parini, fn = ferrLBPA, data = data_list, method = "BFGS", hessian = TRUE)
   mcov     <- solve(pars_fin$hessian)
   parfin   <- exp(pars_fin$par)
   sd_par   <- sqrt(diag(mcov)) * parfin
-
+  
   
   # Resultados
   data_list$flag=2
-  r1  <- ferrLBPA(log(parfin), data_list)
+  r1  <-ferrLBPA(log(parfin), data_list)
   r2 <- per_recruit(parfin, data_list)
   
-
+  
   # Reporte de resultados resumido
   table1 <- matrix(cbind(round(parfin, 2), round(sd_par, 3)), ncol = 2)
   rownames(table1) <- c("Selectivity length at 50% (L50)", "Slope (d)","Fishing mortality (Fcr)",
@@ -467,55 +478,55 @@ LBPA_fits <- function(name, graph_opt, save_opt) {
   SPR=r2$BPRcur/r2$B0
   table2 <- matrix(ncol=1, round(c(r2$B0, r2$BPRcur, r2$BPRtar, SPR, SPR/target, r2$Ftar,r2$Fcur/r2$Ftar,r2$YPRcur,r2$YPRtar),2))
   rownames(table2) <- c("Virginal biomass per-recruit (BPR0)", "Current BPR", "Target BPR","Current spawning potential ratio (SPR)",
-                         "Overexploitation index (SPR/SPRtar)", "Target fishing mortality (Ftar)","Overfishing index (F/Ftar)",
-                         "Current yield per-recruit (YPRcur)","Target  yield per-recruit (YPRtar)")
+                        "Overexploitation index (SPR/SPRtar)", "Target fishing mortality (Ftar)","Overfishing index (F/Ftar)",
+                        "Current yield per-recruit (YPRcur)","Target  yield per-recruit (YPRtar)")
   colnames(table2)<-"Value"
   
   table3 <- matrix(ncol=1, round(c(r1$lprop,r1$lprior,r1$lprop+sum(r1$lprior)),2))
   rownames(table3) <- c("LF Proportions", "L50", "d","Fcr","Lr", "a0","cv","Total")
   colnames(table3)<-"log-likelihood"
   
-    
-  output <- list(table1 = table1, table2=table2, table3=table3, vars1=r1, vars2=r2)
-
-  data_graph=list(pdf=r1$pdf,
-                 C=r2$Ccurr,
-                 Ctar=r2$Ctar,
-                 Ntar=r2$Ntar,
-                 Ncurr=r2$Ncurr,
-                 N0=r2$N0,
-                 Talla=r1$talla,
-                 pobs=r1$pobs,
-                 ppred=r1$ppred,
-                 params=parfin,
-                 parbiol=parbiol,
-                 Fref=r2$Fref,
-                 YPR_eq=r2$YPR,
-                 BPR_eq=r2$BPR,
-                 target=target,
-                 Ftar=r2$Ftar,
-                 Fcr=r2$Fcur,
-                 SPR=SPR)
   
-    if(graph_opt[1]==T){
-  LBPA_graph(data_graph)
-    }
-
-    if(save_opt[1]==T){
-      
-      library(openxlsx)
-      wb <- createWorkbook()
-      addWorksheet(wb, "Table1_Parameters")
-      addWorksheet(wb, "Table2_Variables")
-      addWorksheet(wb, "Table3_Likelihood")
-
-      
-      writeData(wb, sheet = "Table1_Parameters", x = table1, rowNames = T )
-      writeData(wb, sheet = "Table2_Variables", x = table2, rowNames = T )
-      writeData(wb, sheet = "Table3_Likelihood", x = table3, rowNames = T )
-
-      saveWorkbook(wb,paste("Outcomes_",name), overwrite = TRUE)
-    } 
+  output <- list(table1 = table1, table2=table2, table3=table3, vars1=r1, vars2=r2)
+  
+  data_graph=list(pdf=r1$pdf,
+                  C=r2$Ccurr,
+                  Ctar=r2$Ctar,
+                  Ntar=r2$Ntar,
+                  Ncurr=r2$Ncurr,
+                  N0=r2$N0,
+                  Talla=r1$talla,
+                  pobs=r1$pobs,
+                  ppred=r1$ppred,
+                  params=parfin,
+                  parbiol=parbiol,
+                  Fref=r2$Fref,
+                  YPR_eq=r2$YPR,
+                  BPR_eq=r2$BPR,
+                  target=target,
+                  Ftar=r2$Ftar,
+                  Fcr=r2$Fcur,
+                  SPR=SPR)
+  
+  if(graph_opt[1]==T){
+    LBPA_graph(data_graph)
+  }
+  
+  if(save_opt[1]==T){
+    
+    library(openxlsx)
+    wb <- createWorkbook()
+    addWorksheet(wb, "Table1_Parameters")
+    addWorksheet(wb, "Table2_Variables")
+    addWorksheet(wb, "Table3_Likelihood")
+    
+    
+    writeData(wb, sheet = "Table1_Parameters", x = table1, rowNames = T )
+    writeData(wb, sheet = "Table2_Variables", x = table2, rowNames = T )
+    writeData(wb, sheet = "Table3_Likelihood", x = table3, rowNames = T )
+    
+    saveWorkbook(wb,paste("Outcomes_",name), overwrite = TRUE)
+  } 
     
 
   return(output)
