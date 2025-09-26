@@ -89,7 +89,7 @@ LBPA_fits <- function(name, graph_opt, save_opt) {
           z2 <- ((Talla[j] + xs) - Lage[i]) / sd_age[i]
           pdf[i, j] <- pnorm(z2) - pnorm(z1)
         }
-        pdf[i, ] <- pdf[i, ] / sum(pdf[i, ])
+        pdf[i, ] <- pdf[i, ] / sum(pdf[i, ]+1e-10)
       }
       
       Ctalla <- t(pdf) %*% C
@@ -98,7 +98,7 @@ LBPA_fits <- function(name, graph_opt, save_opt) {
       fobs <- datos[, -1]
       lsum <- 0
       for (i in 2:ncol(datos)) {
-        lsum <- lsum + nm * lambda[i - 1] * sum(fobs[, i - 1] / sum(fobs[, i - 1]) * log(ppred))
+        lsum <- lsum + nm * lambda[i - 1] * sum(fobs[, i - 1] / sum(fobs[, i - 1]) * log(ppred+1e-10))
       }
       
       priors=(prioris - log(par_vals))^2 / cv_par^2
