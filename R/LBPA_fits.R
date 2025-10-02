@@ -234,7 +234,7 @@ LBPA_fits <- function(name, graph_opt, save_opt) {
       
       
       apr_out=list(Fref=Fref,BPR=BPR,YPR=YPR,Ncurr=Ncurr,Ccurr=Ccurr,B0=B0,N0=N0,
-                   Ntar=Ntar,Ctar=Ctar,Ftar=Ftar,B0=B0,BPRtar=BPRtar,BPRcur=BPRcur,
+                   Ntar=Ntar,Ctar=Ctar,Ftar=Ftar,B0=BPR[1],BPRtar=BPRtar,BPRcur=BPRcur,
                    YPRtar=YPRtar,YPRcur=YPRcur,Fcur=Fcur)
       
       return(apr_out)
