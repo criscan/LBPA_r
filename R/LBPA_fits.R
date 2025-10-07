@@ -179,7 +179,7 @@ LBPA_fits <- function(name, graph_opt, save_opt) {
       Mad    <- 1 / (1 + exp(-log(19) * (Lage - parbiol[6]) / (parbiol[7]-parbiol[6])))
       Wage   <- exp(parbiol[4]) * Lage^parbiol[5]
       
-      Fref<- seq(0,max(c(3*M,1.1*Fcr)),M/50) 
+      Fref<- seq(0,max(c(3*M,1.1*par_vals["Fcr"])),M/50) 
       N<- rep(1,length(Lage))
       YPR  <- rep(0,length(Fref))
       BPR  <- rep(0,length(Fref))
