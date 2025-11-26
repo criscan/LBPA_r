@@ -11,6 +11,7 @@
 LBPA_fits <- function(name, graph_opt, save_opt) {
   library(readxl)
   library(openxlsx)
+  library(areaplot)
   
   # Lectura de datos desde archivo Excel
   datos    <- as.matrix(read_xlsx(name, sheet = 1, col_names = TRUE))
