@@ -368,67 +368,55 @@ LBPA_fits <- function(name, graph_opt, save_opt) {
               main="Catch at-age",ylim=c(0,max(C)*1.1))
       box()
       
-      # 
-      y1=colSums(Nagelength)
-      y2=colSums(Ntarlength)
-      y3=colSums(Nage0length)
-      
-      plot(Talla,y1, type="l", lwd=2, col="blue",
-           ylab="Density",
-           xlab="Length",
-           main="Population at-length",
-           ylim=c(0,max(rbind(y1,y2,y3))))
-      
-      lines(Talla,y2,
-            type="l",
-            lwd=2, lty=2,
-            col="black",
-            xlim = c(min(Talla),1.1*max(Talla)),
-            ylim = c(0,max(Ctarlength)))
-      
-      lines(Talla,y3,
-            type="l",
-            lwd=2, lty=1,
-            col="green",
-            xlim = c(min(Talla),1.1*max(Talla)),
-            ylim = c(0,max(Nagelength)))
-      
-      legend("topright",c("Current","Target","Unfished","age-groups"),col=c("blue","black","green","black"),
-             lty=c(1,2,1,1),lwd=c(2,2,2,1),bty="n")
-      
-      
-      for (i in 1:nedades) {
-        lines(Talla,Nagelength[i,], type="l")
-      }
-      
-      #
-      
-      plot(Talla,ppred, type="l", lwd=2, col="blue",
-           ylab="Density",
-           xlab="Length",
-           main="Catch at-length")
-      
-      Ctarlength=Ctarlength/sum(Ctarlength)
-      lines(Talla,colSums(Ctarlength),
-            type="l",
-            lwd=2, lty=2,
-            col="black",
-            xlim = c(min(Talla),1.1*max(Talla)),
-            ylim = c(0,max(Ctarlength)))
-      
-      Cagelength=Cagelength/sum(Cagelength)
-      lines(Talla,Cagelength[1,],
-            type="l",
-            xlim = c(min(Talla),1.1*max(Talla)),
-            ylim = c(0,max(Cagelength)))
-      
-      
-      for (i in 2:nedades) {
-        lines(Talla,Cagelength[i,], type="l")
-      }
-      
-      legend("topright",c("Current","Target","age-groups"),col=c("blue","black","black"),
-             lty=c(1,2,1),lwd=c(2,2,1),bty="n")
+    # 
+    y1=colSums(Nagelength)
+    y2=colSums(Ntarlength)
+    y3=colSums(Nage0length)
+    
+    plot(Talla,y1, type="l", lwd=2, col="blue",
+         ylab="Density",
+         xlab="Length",
+         main="Population at-length",
+         ylim=c(0,max(rbind(y1,y2,y3))))
+    
+    lines(Talla,y2,
+          type="l",
+          lwd=2, lty=2,
+          col="black",
+          xlim = c(min(Talla),1.1*max(Talla)),
+          ylim = c(0,max(Ctarlength)))
+    
+    lines(Talla,y3,
+          type="l",
+          lwd=2, lty=1,
+          col="green",
+          xlim = c(min(Talla),1.1*max(Talla)),
+          ylim = c(0,max(Nagelength)))
+    
+    legend("topright",c("Current","Target","Unfished","age-groups"),col=c("blue","black","green","black"),
+           lty=c(1,2,1,1),lwd=c(2,2,2,1),bty="n")
+    
+    
+    for (i in 1:nedades) {
+      lines(Talla,Nagelength[i,], type="l")
+    }
+    
+    #
+    ppred=ppred*sum(C)
+    areaplot(Talla,ppred, col="lightgreen",
+         ylab="Density",
+         xlab="Length",
+         main="Catch at-length")
+    
+    areaplot(Talla,colSums(Ctarlength),
+          add=TRUE,
+          col=rgb(1, 0.71, 0.77,alpha=0.7),
+          xlim = c(min(Talla),1.1*max(Talla)),
+          ylim = c(0,max(Ctarlength)))
+    
+ 
+    legend("topright",c("Current","Target"),col=c("green","pink"),
+           lwd=2,bty="n")
       
       
       #kobe plot
