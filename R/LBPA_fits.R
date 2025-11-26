@@ -357,17 +357,22 @@ LBPA_fits <- function(name, graph_opt, save_opt) {
       abline(h=target,lty=2)
       box()
       text(3,SPR+0.05,paste("SPR=",round(SPR,2)),col="red")
-      # 
-      barplot(N0~edad,col="lightblue",xlab="Relative age",ylab="Density",
-              main="Population at-age")
-      barplot(Ncurr~edad, add = T,col = "gray")
+     
+   # 
+      barplot(rbind(N0,Ncurr),beside=TRUE, width=1, space=c(0,0.2), names.arg = paste(edad),col=c("lightblue","pink"),xlab="Relative age",
+            ylab="Density",
+            main="Population at-age")
       box()
-      legend("topright",c("Unfished","Current"),col=c("lightblue","gray","blue"),
-             lty=1,lwd=2, bty="n")
-      
-      barplot(C~edad,col="lightblue",xlab="Relative age",ylab="Density",
-              main="Catch at-age",ylim=c(0,max(C)*1.1))
+      legend("topright",c("Unfished","Current"),col=c("lightblue","pink"),
+           lty=1,lwd=3, bty="n")
+    
+      barplot(rbind(C,Ctar), beside=TRUE, width=1, space=c(0,0.2),
+            names.arg = paste(edad), col=c("lightblue","pink"),
+            xlab="Relative age",ylab="Density",main="Catch at-age")
+      legend("topright",c("Current","Target"),col=c("lightblue","pink","blue"),
+           lty=1,lwd=2, bty="n")
       box()
+    
       
     # 
     y1=colSums(Nagelength)
