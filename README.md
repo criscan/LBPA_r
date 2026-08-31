@@ -14,6 +14,15 @@ The model is a package for R and can be installed as
 
    devtools::install_github("https://github.com/criscan/LBPA_r")
 
+Another option is
+
+1. install.packages("remotes")
+2. remotes::install_github("criscan/LBPA_r")
+
+In both situations, the model must be loaded as:
+
+library(LBPA_r)
+
 When running the model,  be sure the Excel library is installed and the data file in the same path. The Excel data file has four sheets    
 
 a. Lenght frequencies of catches by year/sample (LF)     
